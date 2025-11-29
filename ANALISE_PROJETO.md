@@ -161,5 +161,4 @@ Todos os profissionais já têm um serviço cadastrado para facilitar os testes!
 
 ---
 
-**Desenvolvido com dedicação para o TCC em Tecnologia em Análise e Desenvolvimento de Sistemas - ETEC**
-
+**Desenvolvido com dedicação para o TCC em Técnico em Desenvolvimento de Sistemas - ETEC**
