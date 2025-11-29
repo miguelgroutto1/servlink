@@ -1,0 +1,144 @@
+/* Sistema de Notificações */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 400px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-left: 4px solid #007bff;
+    animation: slideInRight 0.3s ease-out;
+    font-family: 'Outfit', sans-serif;
+}
+
+.notification.notification-info {
+    border-left-color: #007bff;
+}
+
+.notification.notification-success {
+    border-left-color: #28a745;
+}
+
+.notification.notification-warning {
+    border-left-color: #ffc107;
+}
+
+.notification.notification-error {
+    border-left-color: #dc3545;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    gap: 12px;
+}
+
+.notification-content i {
+    font-size: 18px;
+    color: #007bff;
+}
+
+.notification.notification-success .notification-content i {
+    color: #28a745;
+}
+
+.notification.notification-warning .notification-content i {
+    color: #ffc107;
+}
+
+.notification.notification-error .notification-content i {
+    color: #dc3545;
+}
+
+.notification-content span {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.notification-close:hover {
+    background: #f8f9fa;
+    color: #333;
+}
+
+.notification-close i {
+    font-size: 12px;
+}
+
+/* Animações */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.notification.removing {
+    animation: slideOutRight 0.3s ease-in forwards;
+}
+
+/* Modo escuro */
+.dark .notification {
+    background: #2d3748;
+    color: #e2e8f0;
+}
+
+.dark .notification-content span {
+    color: #e2e8f0;
+}
+
+.dark .notification-close {
+    color: #a0aec0;
+}
+
+.dark .notification-close:hover {
+    background: #4a5568;
+    color: #e2e8f0;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .notification-content {
+        padding: 12px;
+    }
+    
+    .notification-content span {
+        font-size: 13px;
+    }
+}

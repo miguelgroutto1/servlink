@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamentos | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/notifications.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html" class="active">Agendamentos</a>
+                <a href="mensagens.html">Mensagens</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+                <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main style="margin-top: 100px; padding: 2rem 0;">
+        <div class="container">
+            <div class="dashboard-header" style="margin-bottom: 2.5rem; text-align: center; padding: 2.5rem; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 16px; color: white; box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);">
+                <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: white;">Meus Agendamentos</h1>
+                <p style="font-size: 1.125rem; color: rgba(255, 255, 255, 0.9); margin: 0;">Gerencie seus agendamentos e horários de forma simples e organizada</p>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="stats-grid" style="margin-bottom: 2.5rem; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div class="stat-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: none; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); padding: 2rem; border-radius: 16px; transition: all 0.3s;">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                        <i class="fas fa-clock" style="color: #d97706; font-size: 2rem;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="pending-count" style="font-size: 3rem; font-weight: 700; color: #92400e; margin: 0 0 0.5rem 0;">0</h3>
+                        <p style="color: #78350f; font-weight: 600; font-size: 1rem; margin: 0;">Pendentes</p>
+                    </div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: none; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2); padding: 2rem; border-radius: 16px; transition: all 0.3s;">
+                    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.2); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                        <i class="fas fa-check-circle" style="color: #2563eb; font-size: 2rem;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="confirmed-count" style="font-size: 3rem; font-weight: 700; color: #1e40af; margin: 0 0 0.5rem 0;">0</h3>
+                        <p style="color: #1e3a8a; font-weight: 600; font-size: 1rem; margin: 0;">Confirmados</p>
+                    </div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); padding: 2rem; border-radius: 16px; transition: all 0.3s;">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                        <i class="fas fa-star" style="color: #059669; font-size: 2rem;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="completed-count" style="font-size: 3rem; font-weight: 700; color: #065f46; margin: 0 0 0.5rem 0;">0</h3>
+                        <p style="color: #047857; font-weight: 600; font-size: 1rem; margin: 0;">Concluídos</p>
+                    </div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); padding: 2rem; border-radius: 16px; transition: all 0.3s;">
+                    <div class="stat-icon" style="background: rgba(139, 92, 246, 0.2); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                        <i class="fas fa-calendar" style="color: #7c3aed; font-size: 2rem;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-count" style="font-size: 3rem; font-weight: 700; color: #6d28d9; margin: 0 0 0.5rem 0;">0</h3>
+                        <p style="color: #5b21b6; font-weight: 600; font-size: 1rem; margin: 0;">Total</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-section" style="margin-bottom: 2rem; background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                <h3 style="margin: 0 0 1.5rem 0; font-size: 1.5rem; font-weight: 700; color: var(--text-color); display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-filter" style="color: var(--blue);"></i>
+                    Filtrar por status
+                </h3>
+                <div class="filter-buttons" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="filter-btn active" data-status="" style="padding: 0.875rem 1.75rem; border-radius: 12px; border: 2px solid var(--blue); background: var(--blue); color: white; font-weight: 600; transition: all 0.3s; cursor: pointer; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">Todos</button>
+                    <button class="filter-btn" data-status="pending" style="padding: 0.875rem 1.75rem; border-radius: 12px; border: 2px solid #fbbf24; background: transparent; color: #d97706; font-weight: 600; transition: all 0.3s; cursor: pointer;">Pendentes</button>
+                    <button class="filter-btn" data-status="confirmed" style="padding: 0.875rem 1.75rem; border-radius: 12px; border: 2px solid #3b82f6; background: transparent; color: #2563eb; font-weight: 600; transition: all 0.3s; cursor: pointer;">Confirmados</button>
+                    <button class="filter-btn" data-status="completed" style="padding: 0.875rem 1.75rem; border-radius: 12px; border: 2px solid #10b981; background: transparent; color: #059669; font-weight: 600; transition: all 0.3s; cursor: pointer;">Concluídos</button>
+                    <button class="filter-btn" data-status="cancelled" style="padding: 0.875rem 1.75rem; border-radius: 12px; border: 2px solid #ef4444; background: transparent; color: #dc2626; font-weight: 600; transition: all 0.3s; cursor: pointer;">Cancelados</button>
+                </div>
+            </div>
+
+            <!-- Lista de Agendamentos -->
+            <div class="appointments-container" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-calendar-check" style="color: var(--blue);"></i>
+                        Meus Agendamentos
+                    </h2>
+                </div>
+                <div id="appointments-list" class="appointments-grid" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                    <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                        Carregando agendamentos...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulário de Novo Agendamento (apenas para clientes) -->
+            <div id="new-appointment-section" class="form-section" style="display: none; background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-top: 2rem;">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-plus-circle" style="color: var(--blue);"></i>
+                        Novo Agendamento
+                    </h3>
+                </div>
+                <form id="new-appointment-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="service-select">Serviço</label>
+                            <select id="service-select" required>
+                                <option value="">Selecione um serviço...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="provider-select">Profissional</label>
+                            <select id="provider-select" required disabled>
+                                <option value="">Selecione um serviço primeiro...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appointment-date">Data</label>
+                            <input type="date" id="appointment-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointment-time">Horário</label>
+                            <input type="time" id="appointment-time" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointment-notes">Observações</label>
+                        <textarea id="appointment-notes" placeholder="Descreva detalhes específicos do serviço..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-blue">Criar Agendamento</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        let currentFilter = '';
+        let allAppointments = [];
+
+        // Carregar agendamentos
+        async function loadAppointments(status = '') {
+            const container = document.getElementById('appointments-list');
+            if (!container) {
+                console.error('Container de agendamentos não encontrado');
+                return;
+            }
+            
+            try {
+                // Sempre buscar todos os agendamentos primeiro
+                const allAppts = await getAppointments();
+                allAppointments = Array.isArray(allAppts) ? allAppts : [];
+                
+                // Filtrar por status se necessário
+                const filteredAppointments = status 
+                    ? allAppointments.filter(a => a.status === status)
+                    : allAppointments;
+                
+                renderAppointments(filteredAppointments, container);
+                
+                // Atualizar estatísticas apenas se os elementos existirem
+                if (document.getElementById('pending-count')) {
+                updateStats();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar agendamentos:', error);
+                container.innerHTML = 
+                    '<p class="no-results">Erro ao carregar agendamentos: ' + (error.message || error) + '</p>';
+            }
+        }
+
+        // Atualizar estatísticas
+        function updateStats() {
+            if (!allAppointments || !Array.isArray(allAppointments)) {
+                allAppointments = [];
+            }
+            
+            const pending = allAppointments.filter(a => a.status === 'pending').length;
+            const confirmed = allAppointments.filter(a => a.status === 'confirmed').length;
+            const completed = allAppointments.filter(a => a.status === 'completed').length;
+            const total = allAppointments.length;
+
+            const pendingEl = document.getElementById('pending-count');
+            const confirmedEl = document.getElementById('confirmed-count');
+            const completedEl = document.getElementById('completed-count');
+            const totalEl = document.getElementById('total-count');
+            
+            if (pendingEl) pendingEl.textContent = pending;
+            if (confirmedEl) confirmedEl.textContent = confirmed;
+            if (completedEl) completedEl.textContent = completed;
+            if (totalEl) totalEl.textContent = total;
+        }
+
+        let servicesData = []; // Armazenar dados dos serviços
+        
+        // Carregar serviços para o formulário (apenas para clientes)
+        async function loadServicesForForm() {
+            if (currentUser && currentUser.user_type === 'cliente') {
+                try {
+                    const services = await searchServices();
+                    servicesData = services; // Armazenar para uso posterior
+                    const serviceSelect = document.getElementById('service-select');
+                    const providerSelect = document.getElementById('provider-select');
+                    
+                    serviceSelect.innerHTML = '<option value="">Selecione um serviço...</option>';
+                    providerSelect.innerHTML = '<option value="">Selecione um profissional...</option>';
+                    
+                    // Preencher apenas com o título do serviço
+                    services.forEach(service => {
+                        const option = document.createElement('option');
+                        option.value = service.id;
+                        option.textContent = service.title;
+                        option.dataset.providerId = service.provider_id;
+                        option.dataset.providerName = service.provider_name;
+                        serviceSelect.appendChild(option);
+                    });
+                    
+                    // Quando um serviço for selecionado, preencher o profissional automaticamente
+                    serviceSelect.addEventListener('change', function() {
+                        const selectedOption = this.options[this.selectedIndex];
+                        if (selectedOption.value) {
+                            const providerId = selectedOption.dataset.providerId;
+                            const providerName = selectedOption.dataset.providerName;
+                            
+                            providerSelect.innerHTML = '';
+                            const providerOption = document.createElement('option');
+                            providerOption.value = providerId;
+                            providerOption.textContent = providerName;
+                            providerOption.selected = true;
+                            providerSelect.appendChild(providerOption);
+                            providerSelect.disabled = false;
+                        } else {
+                            providerSelect.innerHTML = '<option value="">Selecione um serviço primeiro...</option>';
+                            providerSelect.disabled = true;
+                        }
+                    });
+                    
+                    document.getElementById('new-appointment-section').style.display = 'block';
+                } catch (error) {
+                    console.error('Erro ao carregar serviços:', error);
+                }
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se usuário está logado
+            if (!authToken) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            // Carregar dados iniciais
+            loadAppointments();
+            loadServicesForForm();
+
+            // Filtros com estilo melhorado
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover classe active de todos os botões e resetar estilos
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.remove('active');
+                        const borderColor = b.getAttribute('data-status') === '' ? 'var(--blue)' : 
+                                          b.getAttribute('data-status') === 'pending' ? '#fbbf24' :
+                                          b.getAttribute('data-status') === 'confirmed' ? '#3b82f6' :
+                                          b.getAttribute('data-status') === 'completed' ? '#10b981' : '#ef4444';
+                        b.style.background = 'transparent';
+                        b.style.color = borderColor;
+                    });
+                    // Adicionar classe active ao botão clicado
+                    this.classList.add('active');
+                    const borderColor = this.getAttribute('data-status') === '' ? 'var(--blue)' : 
+                                      this.getAttribute('data-status') === 'pending' ? '#fbbf24' :
+                                      this.getAttribute('data-status') === 'confirmed' ? '#3b82f6' :
+                                      this.getAttribute('data-status') === 'completed' ? '#10b981' : '#ef4444';
+                    this.style.background = borderColor;
+                    this.style.color = 'white';
+                    
+                    const status = this.dataset.status;
+                    currentFilter = status;
+                    loadAppointments(status);
+                });
+            });
+
+            // Formulário de novo agendamento
+            const appointmentForm = document.getElementById('new-appointment-form');
+            if (appointmentForm) {
+                appointmentForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const serviceId = document.getElementById('service-select').value;
+                    const providerId = document.getElementById('provider-select').value;
+                    const date = document.getElementById('appointment-date').value;
+                    const time = document.getElementById('appointment-time').value;
+                    const notes = document.getElementById('appointment-notes').value;
+                    
+                    if (!serviceId || !date || !time) {
+                        showErrorMessage('Preencha todos os campos obrigatórios');
+                        return;
+                    }
+                    
+                    // Validar data (não permitir datas passadas)
+                    const selectedDate = new Date(date);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    if (selectedDate < today) {
+                        showErrorMessage('Não é possível agendar para datas passadas');
+                        return;
+                    }
+                    
+                    // Se o providerId não foi selecionado, buscar do serviço selecionado
+                    let finalProviderId = providerId;
+                    if (!finalProviderId) {
+                        const selectedService = servicesData.find(s => s.id == serviceId);
+                        if (selectedService) {
+                            finalProviderId = selectedService.provider_id;
+                        }
+                    }
+                    
+                    try {
+                        const appointmentData = {
+                            service_id: serviceId,
+                            date: date,
+                            time: time,
+                            notes: notes
+                        };
+                        
+                        await createAppointment(appointmentData);
+                        appointmentForm.reset();
+                        loadAppointments(currentFilter);
+                    } catch (error) {
+                        console.error('Erro ao criar agendamento:', error);
+                        showErrorMessage(error.message);
+                    }
+                });
+            }
+        });
+
+        // Função para abrir chat
+        function openChat(appointmentId) {
+            window.location.href = `mensagens.html?appointment=${appointmentId}`;
+        }
+
+        // Função para atualizar status (global para ser acessível pelos botões)
+        window.updateStatus = async function(appointmentId, newStatus) {
+            try {
+                // Atualizar no localStorage
+                await updateAppointmentStatus(appointmentId, newStatus);
+                
+                // Atualizar a lista local imediatamente
+                const appointmentIndex = allAppointments.findIndex(a => a.id == appointmentId);
+                if (appointmentIndex !== -1) {
+                    allAppointments[appointmentIndex].status = newStatus;
+                    allAppointments[appointmentIndex].updated_at = new Date().toISOString();
+                }
+                
+                // Atualizar estatísticas apenas se os elementos existirem
+                if (document.getElementById('pending-count')) {
+                updateStats();
+                }
+                
+                // Re-renderizar apenas os agendamentos filtrados
+                const filteredAppointments = currentFilter 
+                    ? allAppointments.filter(a => a.status === currentFilter)
+                    : allAppointments;
+                const container = document.getElementById('appointments-list');
+                if (container) {
+                    renderAppointments(filteredAppointments, container);
+                }
+                
+                showSuccessMessage('Status atualizado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao atualizar status:', error);
+                showErrorMessage('Erro ao atualizar status');
+            }
+        };
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

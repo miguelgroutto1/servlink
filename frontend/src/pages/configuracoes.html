@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html">Agendamentos</a>
+                <a href="mensagens.html">Mensagens</a>
+                <a href="avaliacoes.html">Avaliações</a>
+                <a href="configuracoes.html" class="active">Configurações</a>
+            </nav>
+            <div class="navbar-actions">
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+                <button class="btn" onclick="logout()">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main style="margin-top: 100px; padding: 2rem 0;">
+        <div class="container">
+            <div class="page-header">
+                <h1>Configurações</h1>
+                <p>Gerencie seu perfil, preferências e segurança</p>
+            </div>
+
+            <div class="settings-grid">
+                <!-- Perfil -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3><i class="fas fa-user"></i> Perfil</h3>
+                        <button class="btn btn-blue" onclick="saveProfile()">Salvar</button>
+                    </div>
+                    <form id="profile-form" class="settings-form">
+                        <div class="form-group">
+                            <label for="profile-name">Nome Completo</label>
+                            <input type="text" id="profile-name" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-email">Email</label>
+                            <input type="email" id="profile-email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-phone">Telefone</label>
+                            <input type="tel" id="profile-phone" class="form-input" placeholder="(11) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-address">Endereço</label>
+                            <input type="text" id="profile-address" class="form-input" placeholder="Rua, número, bairro">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profile-city">Cidade</label>
+                                <input type="text" id="profile-city" class="form-input" placeholder="São Paulo">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-state">Estado</label>
+                                <input type="text" id="profile-state" class="form-input" placeholder="SP">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Segurança -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3><i class="fas fa-shield-alt"></i> Segurança</h3>
+                        <button class="btn btn-blue" onclick="changePassword()">Alterar</button>
+                    </div>
+                    <form id="password-form" class="settings-form">
+                        <div class="form-group">
+                            <label for="current-password">Senha Atual</label>
+                            <div class="password-input-group">
+                                <input type="password" id="current-password" class="form-input" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('current-password')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">Nova Senha</label>
+                            <div class="password-input-group">
+                                <input type="password" id="new-password" class="form-input" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirmar Nova Senha</label>
+                            <div class="password-input-group">
+                                <input type="password" id="confirm-password" class="form-input" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Notificações -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3><i class="fas fa-bell"></i> Notificações</h3>
+                        <button class="btn btn-blue" onclick="saveNotifications()">Salvar</button>
+                    </div>
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notify-appointments" class="custom-checkbox" checked>
+                                <span class="checkmark"></span>
+                                Novos agendamentos
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notify-messages" class="custom-checkbox" checked>
+                                <span class="checkmark"></span>
+                                Mensagens
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notify-reviews" class="custom-checkbox" checked>
+                                <span class="checkmark"></span>
+                                Novas avaliações
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notify-promotions" class="custom-checkbox">
+                                <span class="checkmark"></span>
+                                Promoções e novidades
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacidade -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3><i class="fas fa-lock"></i> Privacidade</h3>
+                        <button class="btn btn-blue" onclick="savePrivacy()">Salvar</button>
+                    </div>
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="profile-public" class="custom-checkbox" checked>
+                                <span class="checkmark"></span>
+                                Perfil público
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="show-phone" class="custom-checkbox" checked>
+                                <span class="checkmark"></span>
+                                Mostrar telefone
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="show-address" class="custom-checkbox">
+                                <span class="checkmark"></span>
+                                Mostrar endereço
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conta -->
+                <div class="settings-card">
+                    <div class="settings-card-header">
+                        <h3><i class="fas fa-cog"></i> Conta</h3>
+                    </div>
+                    <div class="settings-form">
+                        <div class="form-group">
+                            <label>Tipo de Conta</label>
+                            <p class="account-type" id="account-type">Cliente</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Membro desde</label>
+                            <p class="member-since" id="member-since">Janeiro 2024</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Status da Conta</label>
+                            <p class="account-status" id="account-status">Ativa</p>
+                        </div>
+                        <div class="danger-zone">
+                            <h4>Zona de Perigo</h4>
+                            <button class="btn btn-red" onclick="deleteAccount()">
+                                <i class="fas fa-trash"></i> Excluir Conta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        let userProfile = null;
+
+        // Carregar perfil do usuário
+        async function loadUserProfile() {
+            try {
+                const profile = await fetchUserProfile();
+                userProfile = profile;
+                populateProfileForm(profile);
+                updateAccountInfo(profile);
+            } catch (error) {
+                console.error('Erro ao carregar perfil:', error);
+                showErrorMessage('Erro ao carregar dados do perfil');
+            }
+        }
+
+        // Preencher formulário de perfil
+        function populateProfileForm(profile) {
+            document.getElementById('profile-name').value = profile.name || '';
+            document.getElementById('profile-email').value = profile.email || '';
+            document.getElementById('profile-phone').value = profile.phone || '';
+            document.getElementById('profile-address').value = profile.address || '';
+            document.getElementById('profile-city').value = profile.city || '';
+            document.getElementById('profile-state').value = profile.state || '';
+        }
+
+        // Atualizar informações da conta
+        function updateAccountInfo(profile) {
+            document.getElementById('account-type').textContent = 
+                profile.user_type === 'profissional' ? 'Profissional' : 'Cliente';
+            document.getElementById('member-since').textContent = 
+                new Date(profile.created_at || Date.now()).toLocaleDateString('pt-BR', { 
+                    year: 'numeric', 
+                    month: 'long' 
+                });
+            document.getElementById('account-status').textContent = 'Ativa';
+        }
+
+        // Salvar perfil
+        async function saveProfile() {
+            const form = document.getElementById('profile-form');
+            const formData = new FormData(form);
+            
+            const profileData = {
+                name: document.getElementById('profile-name').value,
+                email: document.getElementById('profile-email').value,
+                phone: document.getElementById('profile-phone').value,
+                address: document.getElementById('profile-address').value,
+                city: document.getElementById('profile-city').value,
+                state: document.getElementById('profile-state').value
+            };
+
+            try {
+                // Implementar API para atualizar perfil
+                // await updateProfile(profileData);
+                showSuccessMessage('Perfil atualizado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao atualizar perfil:', error);
+                showErrorMessage('Erro ao atualizar perfil');
+            }
+        }
+
+        // Alterar senha
+        async function changePassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showErrorMessage('Preencha todos os campos');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showErrorMessage('As senhas não coincidem');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showErrorMessage('A nova senha deve ter pelo menos 6 caracteres');
+                return;
+            }
+
+            try {
+                // Implementar API para alterar senha
+                // await changePasswordAPI(currentPassword, newPassword);
+                document.getElementById('password-form').reset();
+                showSuccessMessage('Senha alterada com sucesso!');
+            } catch (error) {
+                console.error('Erro ao alterar senha:', error);
+                showErrorMessage('Erro ao alterar senha');
+            }
+        }
+
+        // Salvar configurações de notificação
+        function saveNotifications() {
+            const notifications = {
+                appointments: document.getElementById('notify-appointments').checked,
+                messages: document.getElementById('notify-messages').checked,
+                reviews: document.getElementById('notify-reviews').checked,
+                promotions: document.getElementById('notify-promotions').checked
+            };
+
+            // Salvar no localStorage por enquanto
+            localStorage.setItem('servlink_notifications', JSON.stringify(notifications));
+            showSuccessMessage('Configurações de notificação salvas!');
+        }
+
+        // Salvar configurações de privacidade
+        function savePrivacy() {
+            const privacy = {
+                profilePublic: document.getElementById('profile-public').checked,
+                showPhone: document.getElementById('show-phone').checked,
+                showAddress: document.getElementById('show-address').checked
+            };
+
+            // Salvar no localStorage por enquanto
+            localStorage.setItem('servlink_privacy', JSON.stringify(privacy));
+            showSuccessMessage('Configurações de privacidade salvas!');
+        }
+
+        // Excluir conta
+        function deleteAccount() {
+            if (confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.')) {
+                if (confirm('Esta é sua última chance. Tem certeza absoluta?')) {
+                    try {
+                        // Implementar API para excluir conta
+                        // await deleteAccountAPI();
+                        logout();
+                        showSuccessMessage('Conta excluída com sucesso');
+                    } catch (error) {
+                        console.error('Erro ao excluir conta:', error);
+                        showErrorMessage('Erro ao excluir conta');
+                    }
+                }
+            }
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.parentNode.querySelector('.password-toggle i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.classList.remove('fa-eye');
+                button.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                button.classList.remove('fa-eye-slash');
+                button.classList.add('fa-eye');
+            }
+        }
+
+        // Carregar configurações salvas
+        function loadSavedSettings() {
+            // Notificações
+            const notifications = JSON.parse(localStorage.getItem('servlink_notifications') || '{}');
+            document.getElementById('notify-appointments').checked = notifications.appointments !== false;
+            document.getElementById('notify-messages').checked = notifications.messages !== false;
+            document.getElementById('notify-reviews').checked = notifications.reviews !== false;
+            document.getElementById('notify-promotions').checked = notifications.promotions === true;
+
+            // Privacidade
+            const privacy = JSON.parse(localStorage.getItem('servlink_privacy') || '{}');
+            document.getElementById('profile-public').checked = privacy.profilePublic !== false;
+            document.getElementById('show-phone').checked = privacy.showPhone !== false;
+            document.getElementById('show-address').checked = privacy.showAddress === true;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se usuário está logado
+            if (!authToken) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            // Carregar dados
+            loadUserProfile();
+            loadSavedSettings();
+        });
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

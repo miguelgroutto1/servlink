@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/notifications.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html">Agendamentos</a>
+                <a href="mensagens.html" class="active">Mensagens</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+                <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main style="margin-top: 100px; padding: 2rem 0;">
+        <div class="container">
+            <div class="page-header">
+                <h1>Mensagens</h1>
+                <p>Converse com seus clientes e profissionais</p>
+            </div>
+
+            <div class="chat-container">
+                <!-- Lista de Agendamentos com Chat -->
+                <div class="chat-sidebar">
+                    <div class="chat-sidebar-header">
+                        <h3>Conversas</h3>
+                        <button class="btn btn-outline" onclick="loadAppointments()">
+                            <i class="fas fa-refresh"></i>
+                        </button>
+                    </div>
+                    <div id="appointments-list" class="appointments-list">
+                        <div class="loading">Carregando conversas...</div>
+                    </div>
+                </div>
+
+                <!-- Área de Chat -->
+                <div class="chat-main">
+                    <div id="chat-header" class="chat-header" style="display: none;">
+                        <div class="chat-user-info">
+                            <img id="chat-user-avatar" src="" alt="Avatar" class="chat-user-avatar">
+                            <div>
+                                <h4 id="chat-user-name">Nome do Usuário</h4>
+                                <p id="chat-service-title">Serviço</p>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="btn btn-outline" onclick="viewAppointmentDetails()">
+                                <i class="fas fa-info-circle"></i> Detalhes
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="chat-messages" class="chat-messages">
+                        <div class="chat-placeholder">
+                            <i class="fas fa-comments"></i>
+                            <h3>Selecione uma conversa</h3>
+                            <p>Escolha um agendamento para começar a conversar</p>
+                        </div>
+                    </div>
+
+                    <div id="chat-input" class="chat-input" style="display: none;">
+                        <form id="message-form">
+                            <div class="message-input-container">
+                                <input type="text" id="message-text" placeholder="Digite sua mensagem..." required>
+                                <button type="submit" class="btn btn-blue">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        let currentAppointment = null;
+        let currentReceiver = null;
+        // demoMode/removido: mensagens agora apenas logado
+
+        // Carregar agendamentos com chat
+        async function loadAppointments() {
+            try {
+                const appointments = await getAppointments();
+                renderAppointmentsList(appointments);
+            } catch (error) {
+                console.error('Erro ao carregar agendamentos:', error);
+                document.getElementById('appointments-list').innerHTML = 
+                    '<p class="no-results">Erro ao carregar conversas</p>';
+            }
+        }
+
+        // Renderizar lista de agendamentos
+        function renderAppointmentsList(appointments) {
+            const container = document.getElementById('appointments-list');
+            
+            if (!appointments.length) {
+                container.innerHTML = '<p class="no-results">Nenhuma conversa encontrada</p>';
+                return;
+            }
+
+            // Limpar container
+            container.innerHTML = '';
+            
+            // Criar elementos DOM diretamente
+            appointments.forEach(appointment => {
+                const otherUser = appointment.client_id === currentUser.id ? 
+                    appointment.provider_name : appointment.client_name;
+                const otherUserId = appointment.client_id === currentUser.id ? 
+                    appointment.provider_id : appointment.client_id;
+                const profileImage = getUserProfileImage(otherUserId);
+                
+                // Criar elementos
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'appointment-chat-item';
+                itemDiv.onclick = () => openChat(appointment.id, otherUserId, otherUser);
+                
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'appointment-chat-avatar';
+                
+                const img = document.createElement('img');
+                img.src = profileImage;
+                img.alt = otherUser;
+                img.className = 'chat-avatar';
+                img.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjBGMEYwIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5OTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIj5TZW0gZm90bzwvdGV4dD4KPC9zdmc+';
+                };
+                
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'appointment-chat-info';
+                
+                const h4 = document.createElement('h4');
+                h4.textContent = otherUser;
+                
+                const p = document.createElement('p');
+                p.textContent = appointment.service_title || 'Serviço';
+                
+                const span = document.createElement('span');
+                span.className = 'appointment-status status-' + appointment.status;
+                span.textContent = getStatusText(appointment.status);
+                
+                // Montar estrutura
+                avatarDiv.appendChild(img);
+                infoDiv.appendChild(h4);
+                infoDiv.appendChild(p);
+                infoDiv.appendChild(span);
+                itemDiv.appendChild(avatarDiv);
+                itemDiv.appendChild(infoDiv);
+                container.appendChild(itemDiv);
+            });
+        }
+
+        // Abrir chat
+        async function openChat(appointmentId, receiverId, receiverName) {
+            currentAppointment = appointmentId;
+            currentReceiver = receiverId;
+            
+            // Atualizar header do chat
+            document.getElementById('chat-user-name').textContent = receiverName;
+            document.getElementById('chat-service-title').textContent = 'Serviço';
+            document.getElementById('chat-user-avatar').src = getUserProfileImage(receiverId);
+            
+            // Mostrar área de chat
+            document.getElementById('chat-header').style.display = 'flex';
+            document.getElementById('chat-input').style.display = 'block';
+            
+            // Carregar mensagens
+            await loadMessages(appointmentId);
+        }
+
+        // Carregar mensagens
+        async function loadMessages(appointmentId) {
+            try {
+                const messages = await getMessages(appointmentId);
+                renderMessages(messages);
+            } catch (error) {
+                console.error('Erro ao carregar mensagens:', error);
+                document.getElementById('chat-messages').innerHTML = 
+                    '<p class="no-results">Erro ao carregar mensagens</p>';
+            }
+        }
+
+        // Renderizar mensagens
+        function renderMessages(messages) {
+            const container = document.getElementById('chat-messages');
+            
+            if (!messages.length) {
+                container.innerHTML = `
+                    <div class="chat-placeholder">
+                        <i class="fas fa-comments"></i>
+                        <h3>Nenhuma mensagem ainda</h3>
+                        <p>Seja o primeiro a enviar uma mensagem!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = messages.map(message => `
+                <div class="message ${message.sender_id === currentUser.id ? 'message-sent' : 'message-received'}">
+                    <div class="message-content">
+                        <p>${message.message}</p>
+                        <span class="message-time">${formatDateTime(message.created_at)}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Rolar para a última mensagem
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Ver detalhes do agendamento
+        function viewAppointmentDetails() {
+            if (currentAppointment) {
+                window.location.href = `agendamentos.html?id=${currentAppointment}`;
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se usuário está logado
+            if (!authToken) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            // Carregar agendamentos
+            loadAppointments();
+
+            // Formulário de mensagem
+            const messageForm = document.getElementById('message-form');
+            if (messageForm) {
+                messageForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const messageText = document.getElementById('message-text').value.trim();
+                    if (!messageText || !currentAppointment || !currentReceiver) {
+                        return;
+                    }
+                    
+                    try {
+                        const messageData = {
+                            receiver_id: currentReceiver,
+                            appointment_id: currentAppointment,
+                            message: messageText
+                        };
+                        await sendMessage(messageData);
+                        document.getElementById('message-text').value = '';
+                        await loadMessages(currentAppointment);
+                    } catch (error) {
+                        console.error('Erro ao enviar mensagem:', error);
+                        showErrorMessage('Erro ao enviar mensagem');
+                    }
+                });
+            }
+
+            // Verificar se há appointment_id na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const appointmentId = urlParams.get('appointment');
+            if (appointmentId) {
+                // Carregar detalhes do agendamento e abrir chat
+                loadAppointmentAndOpenChat(appointmentId);
+            }
+        });
+
+        // Carregar agendamento específico e abrir chat
+        async function loadAppointmentAndOpenChat(appointmentId) {
+            try {
+                const appointments = await getAppointments();
+                const appointment = appointments.find(a => a.id == appointmentId);
+                
+                if (appointment) {
+                    const otherUser = appointment.client_id === currentUser.id ? 
+                        appointment.provider_name : appointment.client_name;
+                    const otherUserId = appointment.client_id === currentUser.id ? 
+                        appointment.provider_id : appointment.client_id;
+                    
+                    openChat(appointment.id, otherUserId, otherUser);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar agendamento:', error);
+            }
+        }
+
+        // (modo demo removido)
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

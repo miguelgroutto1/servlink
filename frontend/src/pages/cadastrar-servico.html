@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Serviço | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard.html" id="dashboard-link">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html" id="appointments-link">Agendamentos</a>
+                <a href="mensagens.html" id="messages-link">Mensagens</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+                <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+                <button class="btn btn-red" id="logout-btn-desktop" onclick="logout()" style="display: none;">Sair</button>
+                <button class="mobile-menu-btn" id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html">Início</a>
+            <a href="dashboard.html" id="dashboard-link-mobile">Dashboard</a>
+            <a href="servicos.html">Serviços</a>
+            <a href="agendamentos.html" id="appointments-link-mobile">Agendamentos</a>
+            <a href="mensagens.html" id="messages-link-mobile">Mensagens</a>
+            <div class="mobile-menu-actions">
+                <a href="auth.html" class="btn btn-blue btn-block" id="btn-entrar-mobile">Entrar</a>
+                <a href="conta.html" class="btn btn-primary btn-block" id="account-btn-mobile" style="display: none;">Conta</a>
+                <button class="btn" id="dark-mode-toggle-mobile" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+                <button class="btn" id="logout-btn-mobile" onclick="logout()" style="display: none;">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="auth-main-content" style="padding: 3rem 1rem; padding-top: 5rem;">
+        <div class="form-card" style="max-width: 600px; margin: 0 auto;">
+            <div class="form-header">
+                <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                    <i class="fas fa-plus" style="font-size: 2rem; color: white;"></i>
+                </div>
+                <h1 style="font-size: 1.75rem; font-weight: 700; color: white; margin-bottom: 0.5rem;">Cadastrar Novo Serviço</h1>
+                <p style="color: rgba(255,255,255,0.9); font-size: 1rem; margin: 0;">Preencha os dados do seu serviço</p>
+            </div>
+
+            <form id="service-form" style="padding: 2.5rem; padding-top: 3rem;">
+                <!-- Seção 1: Informações Básicas -->
+                <div style="margin-bottom: 2.5rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--text-color); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--border-color);">
+                        <i class="fas fa-info-circle" style="color: var(--blue); font-size: 1rem;"></i>
+                        Informações Básicas
+                    </h3>
+                    
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="service-title">Título do Serviço</label>
+                        <input type="text" id="service-title" class="form-input" placeholder="Ex: Reparo de Eletrodomésticos" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="service-category">Categoria</label>
+                        <select id="service-category" class="form-input" required></select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="service-description">Descrição Detalhada</label>
+                        <textarea id="service-description" class="form-input" rows="4" placeholder="Descreva detalhadamente o seu serviço..." required style="resize: vertical; min-height: 100px;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Seção 2: Preço e Localização -->
+                <div style="margin-bottom: 2.5rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--text-color); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--border-color);">
+                        <i class="fas fa-dollar-sign" style="color: var(--green); font-size: 1rem;"></i>
+                        Preço e Localização
+                    </h3>
+                    
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div class="form-group">
+                            <label for="service-price">Preço</label>
+                            <div style="position: relative;">
+                                <span style="position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: 600; z-index: 1; pointer-events: none;">R$</span>
+                                <input type="number" id="service-price" class="form-input" placeholder="120.00" step="0.01" required style="padding-left: 2.5rem; background: var(--input-bg) !important; -webkit-appearance: none; appearance: none;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-price-type">Tipo de Preço</label>
+                            <select id="service-price-type" class="form-input" required style="background: var(--input-bg) !important; -webkit-appearance: none; appearance: none; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><polyline points=\'6 9 12 15 18 9\'></polyline></svg>'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1em; padding-right: 2.5rem;">
+                                <option value="hour">Por Hora</option>
+                                <option value="service">Por Serviço</option>
+                                <option value="day">Por Dia</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="service-location">Localização</label>
+                        <input type="text" id="service-location" class="form-input" placeholder="Ex: São Paulo, SP" required>
+                    </div>
+                </div>
+
+                <!-- Seção 3: Disponibilidade e Experiência -->
+                <div style="margin-bottom: 2.5rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--text-color); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--border-color);">
+                        <i class="fas fa-user-tie" style="color: var(--purple); font-size: 1rem;"></i>
+                        Disponibilidade e Experiência
+                    </h3>
+                    
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="service-availability">Disponibilidade</label>
+                            <select id="service-availability" class="form-input" required>
+                                <option value="full-time">Tempo Integral</option>
+                                <option value="part-time">Meio Período</option>
+                                <option value="weekends">Fins de Semana</option>
+                                <option value="flexible">Flexível</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-experience">Anos de Experiência</label>
+                            <input type="number" id="service-experience" class="form-input" placeholder="5" min="0" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção 4: Imagens e Tags (Opcional) -->
+                <div style="margin-bottom: 2.5rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--text-color); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--border-color);">
+                        <i class="fas fa-images" style="color: var(--yellow); font-size: 1rem;"></i>
+                        Imagens e Tags <span style="font-size: 0.875rem; font-weight: 400; color: var(--text-muted);">(Opcional)</span>
+                    </h3>
+                    
+                    <!-- Upload de Fotos -->
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label>Fotos do Serviço</label>
+                        <div style="border: 2px dashed var(--border-color); border-radius: 12px; padding: 1.5rem; text-align: center; background: var(--bg-color); transition: all 0.3s;" id="image-upload-area" onmouseover="this.style.borderColor='var(--blue)'; this.style.background='rgba(59, 130, 246, 0.05)';" onmouseout="this.style.borderColor='var(--border-color)'; this.style.background='var(--bg-color)';">
+                            <input type="file" id="service-images-input" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; color: var(--blue); margin-bottom: 0.75rem; display: block;"></i>
+                            <p style="color: var(--text-color); font-weight: 600; margin: 0 0 0.5rem 0;">Clique para fazer upload ou arraste as imagens aqui</p>
+                            <p style="color: var(--text-muted); font-size: 0.875rem; margin: 0;">Formatos aceitos: JPG, PNG, GIF (máx. 5MB por imagem)</p>
+                            <button type="button" onclick="document.getElementById('service-images-input').click()" class="btn btn-outline" style="margin-top: 1rem;">
+                                <i class="fas fa-plus"></i> Selecionar Imagens
+                            </button>
+                        </div>
+                        <div id="image-preview-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; margin-top: 1rem;"></div>
+                    </div>
+
+                    <!-- URLs alternativas (colapsável) -->
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <details style="cursor: pointer;">
+                            <summary style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.5rem; user-select: none;">
+                                <i class="fas fa-link"></i> Ou use URLs de imagens (clique para expandir)
+                            </summary>
+                            <textarea id="service-images-urls" class="form-input" rows="2" placeholder="Cole as URLs separadas por vírgula" style="resize: vertical; min-height: 80px; margin-top: 0.5rem;"></textarea>
+                        </details>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service-tags">Tags</label>
+                        <input type="text" id="service-tags" class="form-input" placeholder="Ex: reparo, manutenção, eletrodomésticos">
+                        <small style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem; display: block;">Separe as tags por vírgula</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-blue btn-block">Cadastrar Serviço</button>
+            </form>
+
+            <div class="form-footer">
+                <p style="margin: 0;"><a href="dashboard-prestador.html" class="form-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar ao Dashboard
+                </a></p>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Verificar se usuário está logado e tem acesso
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Verificar acesso - apenas profissionais podem cadastrar serviços
+            if (!checkUserAccess('services-create')) {
+                return;
+            }
+            
+            // Carregar categorias
+            await populateCategorySelect('service-category', {
+                includePlaceholder: true,
+                placeholderLabel: 'Selecione uma categoria',
+                placeholderDisabled: true,
+                optionFormatter: (category) => {
+                    const emoji = CATEGORY_MAP[category.slug]?.emoji || '';
+                    return `${emoji ? emoji + ' ' : ''}${category.name}`;
+                }
+            });
+        });
+
+        // Array para armazenar imagens em base64
+        let uploadedImages = [];
+
+        // Função para fazer upload de imagens
+        function handleImageUpload(event) {
+            const files = Array.from(event.target.files);
+            const container = document.getElementById('image-preview-container');
+            
+            files.forEach(file => {
+                // Validar tamanho (máx 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showErrorMessage(`A imagem "${file.name}" excede 5MB. Por favor, escolha uma imagem menor.`);
+                    return;
+                }
+                
+                // Validar tipo
+                if (!file.type.startsWith('image/')) {
+                    showErrorMessage(`O arquivo "${file.name}" não é uma imagem válida.`);
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageDataUrl = e.target.result;
+                    uploadedImages.push(imageDataUrl);
+                    
+                    // Criar preview
+                    const previewDiv = document.createElement('div');
+                    previewDiv.style.position = 'relative';
+                    previewDiv.style.aspectRatio = '1';
+                    previewDiv.style.borderRadius = '8px';
+                    previewDiv.style.overflow = 'hidden';
+                    previewDiv.style.border = '2px solid var(--border-color)';
+                    
+                    const img = document.createElement('img');
+                    img.src = imageDataUrl;
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    removeBtn.type = 'button';
+                    removeBtn.style.cssText = 'position: absolute; top: 0.25rem; right: 0.25rem; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; transition: all 0.2s;';
+                    removeBtn.onmouseover = function() { this.style.background = 'rgba(220, 38, 38, 1)'; this.style.transform = 'scale(1.1)'; };
+                    removeBtn.onmouseout = function() { this.style.background = 'rgba(239, 68, 68, 0.9)'; this.style.transform = 'scale(1)'; };
+                    removeBtn.onclick = function() {
+                        const index = uploadedImages.indexOf(imageDataUrl);
+                        if (index > -1) {
+                            uploadedImages.splice(index, 1);
+                        }
+                        previewDiv.remove();
+                        updateImageCount();
+                    };
+                    
+                    previewDiv.appendChild(img);
+                    previewDiv.appendChild(removeBtn);
+                    container.appendChild(previewDiv);
+                    container.style.display = 'grid';
+                    
+                    updateImageCount();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Função para atualizar contador de imagens
+        function updateImageCount() {
+            const count = uploadedImages.length;
+            const uploadArea = document.getElementById('image-upload-area');
+            const text = uploadArea.querySelector('p');
+            if (count > 0) {
+                text.innerHTML = `<strong>${count}</strong> imagem${count > 1 ? 'ns' : ''} selecionada${count > 1 ? 's' : ''}`;
+            } else {
+                text.innerHTML = 'Clique para fazer upload ou arraste as imagens aqui';
+            }
+        }
+
+        // Permitir drag and drop
+        const uploadArea = document.getElementById('image-upload-area');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.style.borderColor = 'var(--blue)';
+                uploadArea.style.background = 'rgba(59, 130, 246, 0.1)';
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.style.borderColor = 'var(--border-color)';
+                uploadArea.style.background = 'var(--bg-color)';
+            }, false);
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = Array.from(dt.files).filter(file => file.type.startsWith('image/'));
+            if (files.length > 0) {
+                const input = document.getElementById('service-images-input');
+                // Criar um novo FileList
+                const dataTransfer = new DataTransfer();
+                files.forEach(file => dataTransfer.items.add(file));
+                input.files = dataTransfer.files;
+                handleImageUpload({ target: { files: files } });
+            }
+        }, false);
+
+        // Formulário de cadastro de serviço
+        document.getElementById('service-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const categorySelect = document.getElementById('service-category');
+            const selectedCategoryOption = categorySelect.options[categorySelect.selectedIndex];
+            
+            // Combinar imagens uploadadas com URLs
+            const urlImages = document.getElementById('service-images-urls').value
+                .split(',')
+                .map(url => url.trim())
+                .filter(url => url);
+            
+            const allImages = [...uploadedImages, ...urlImages];
+            
+            const serviceData = {
+                title: document.getElementById('service-title').value,
+                category_id: selectedCategoryOption?.value,
+                category: selectedCategoryOption?.dataset.slug,
+                description: document.getElementById('service-description').value,
+                price: parseFloat(document.getElementById('service-price').value),
+                price_type: document.getElementById('service-price-type').value,
+                location: document.getElementById('service-location').value,
+                availability: document.getElementById('service-availability').value,
+                experience_years: parseInt(document.getElementById('service-experience').value),
+                images: allImages,
+                tags: document.getElementById('service-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
+            };
+            
+            try {
+                await createService(serviceData);
+                showSuccessMessage('Serviço cadastrado com sucesso! Ele já está disponível para os clientes!');
+                // Pequeno delay para mostrar a mensagem de sucesso
+                setTimeout(() => {
+                    window.location.href = 'dashboard-prestador.html';
+                }, 1500);
+            } catch (error) {
+                showErrorMessage('Erro ao cadastrar serviço: ' + error.message);
+            }
+        });
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

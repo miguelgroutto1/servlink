@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinir Senha | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html">Início</a>
+                <a href="servicos.html">Serviços</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="auth.html" class="btn btn-blue">Voltar ao Login</a>
+                <button class="mobile-menu-btn" id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html">Início</a>
+            <a href="servicos.html">Serviços</a>
+            <div class="mobile-menu-actions">
+                <a href="auth.html" class="btn btn-blue btn-block">Voltar ao Login</a>
+                <button class="btn" id="dark-mode-toggle-mobile" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="auth-main-content" style="padding: 3rem 1rem; min-height: calc(100vh - 68px); display: flex; align-items: center; justify-content: center;">
+        <div class="auth-container" style="max-width: 450px; width: 100%;">
+            <div class="auth-card" style="background: var(--card-bg); border-radius: 20px; padding: 2.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                        <i class="fas fa-lock" style="font-size: 2rem; color: white;"></i>
+                    </div>
+                    <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--text-color); margin-bottom: 0.5rem;">Redefinir Senha</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">Digite sua nova senha</p>
+                </div>
+
+                <div id="invalid-token" style="display: none; text-align: center; padding: 1.5rem; background: #fee2e2; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #dc2626; margin-bottom: 0.5rem;"></i>
+                    <h3 style="color: #991b1b; font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Token Inválido ou Expirado</h3>
+                    <p style="color: #7f1d1d; font-size: 0.9rem; margin-bottom: 1rem;">O link de recuperação é inválido ou expirou. Solicite um novo.</p>
+                    <a href="recuperar-senha.html" class="btn btn-blue" style="display: inline-block; padding: 0.75rem 1.5rem;">Solicitar Novo Link</a>
+                </div>
+
+                <form id="reset-password-form" style="display: none;">
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="new-password" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">
+                            <i class="fas fa-lock" style="margin-right: 0.5rem; color: var(--blue);"></i>
+                            Nova Senha
+                        </label>
+                        <input type="password" id="new-password" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6" style="width: 100%; padding: 1rem; border: 2px solid var(--border-color); border-radius: 10px; font-size: 1rem; transition: all 0.3s;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="confirm-new-password" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">
+                            <i class="fas fa-lock" style="margin-right: 0.5rem; color: var(--blue);"></i>
+                            Confirmar Nova Senha
+                        </label>
+                        <input type="password" id="confirm-new-password" class="form-input" placeholder="Digite a senha novamente" required minlength="6" style="width: 100%; padding: 1rem; border: 2px solid var(--border-color); border-radius: 10px; font-size: 1rem; transition: all 0.3s;">
+                    </div>
+
+                    <button type="submit" class="btn btn-blue" style="width: 100%; padding: 1rem; font-size: 1rem; font-weight: 600; margin-bottom: 1rem;">
+                        <i class="fas fa-check" style="margin-right: 0.5rem;"></i>
+                        Redefinir Senha
+                    </button>
+                </form>
+
+                <div id="reset-success" style="display: none; text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-radius: 12px; margin-top: 1.5rem;">
+                    <i class="fas fa-check-circle" style="font-size: 3rem; color: #059669; margin-bottom: 1rem;"></i>
+                    <h3 style="color: #065f46; font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Senha Redefinida!</h3>
+                    <p style="color: #047857; font-size: 0.95rem; margin-bottom: 1rem;">Sua senha foi alterada com sucesso. Você já pode fazer login.</p>
+                    <a href="auth.html" class="btn btn-blue" style="display: inline-block; padding: 0.75rem 1.5rem;">Fazer Login</a>
+                </div>
+
+                <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                        Lembrou sua senha? 
+                        <a href="auth.html" style="color: var(--blue); font-weight: 600; text-decoration: none;">Fazer login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar token na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const email = urlParams.get('email');
+
+            if (!token || !email) {
+                document.getElementById('invalid-token').style.display = 'block';
+                return;
+            }
+
+            // Verificar se o token é válido
+            const recoveryTokens = JSON.parse(localStorage.getItem('servlink_recovery_tokens') || '[]');
+            const recoveryData = recoveryTokens.find(t => t.email === email && t.token === token);
+
+            if (!recoveryData) {
+                document.getElementById('invalid-token').style.display = 'block';
+                return;
+            }
+
+            // Verificar se o token expirou
+            const expiresAt = new Date(recoveryData.expires_at);
+            if (expiresAt < new Date()) {
+                document.getElementById('invalid-token').style.display = 'block';
+                // Remover token expirado
+                const updatedTokens = recoveryTokens.filter(t => t.token !== token);
+                localStorage.setItem('servlink_recovery_tokens', JSON.stringify(updatedTokens));
+                return;
+            }
+
+            // Mostrar formulário
+            document.getElementById('reset-password-form').style.display = 'block';
+
+            // Formulário de redefinição
+            document.getElementById('reset-password-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-new-password').value;
+                
+                if (newPassword.length < 6) {
+                    showErrorMessage('A senha deve ter no mínimo 6 caracteres');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showErrorMessage('As senhas não coincidem');
+                    return;
+                }
+
+                try {
+                    // Buscar usuário
+                    const users = JSON.parse(localStorage.getItem('servlink_users') || '[]');
+                    const userIndex = users.findIndex(u => u.email === email);
+                    
+                    if (userIndex === -1) {
+                        showErrorMessage('Usuário não encontrado');
+                        return;
+                    }
+
+                    // Atualizar senha
+                    users[userIndex].password = newPassword;
+                    localStorage.setItem('servlink_users', JSON.stringify(users));
+
+                    // Remover token usado
+                    const updatedTokens = recoveryTokens.filter(t => t.token !== token);
+                    localStorage.setItem('servlink_recovery_tokens', JSON.stringify(updatedTokens));
+
+                    // Mostrar sucesso
+                    document.getElementById('reset-password-form').style.display = 'none';
+                    document.getElementById('reset-success').style.display = 'block';
+                    
+                    showSuccessMessage('Senha redefinida com sucesso!');
+                } catch (error) {
+                    showErrorMessage('Erro ao redefinir senha: ' + error.message);
+                }
+            });
+        });
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/notifications.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard.html" id="dashboard-link">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html" id="appointments-link">Agendamentos</a>
+                <a href="mensagens.html" id="messages-link">Mensagens</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+                <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+                <button class="mobile-menu-btn" id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html" data-hide-when="authenticated">Início</a>
+            <a href="dashboard.html" id="dashboard-link-mobile">Dashboard</a>
+            <a href="servicos.html">Serviços</a>
+            <a href="agendamentos.html" id="appointments-link-mobile">Agendamentos</a>
+            <a href="mensagens.html" id="messages-link-mobile">Mensagens</a>
+            <div class="mobile-menu-actions">
+                <a href="auth.html" class="btn btn-blue btn-block" id="btn-entrar-mobile">Entrar</a>
+                <a href="conta.html" class="btn btn-primary btn-block" id="account-btn-mobile" style="display: none;">Conta</a>
+                <button class="btn" id="dark-mode-toggle-mobile" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main style="margin-top: 100px; padding: 2rem 0;">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>Bem-vindo, <span id="user-name">Usuário</span>!</h1>
+                <p id="dashboard-subtitle">Gerencie seus serviços e agendamentos</p>
+            </div>
+
+            <div class="dashboard-stats" id="dashboard-stats">
+                <div class="loading">Carregando estatísticas...</div>
+            </div>
+
+            <div class="form-section">
+                <h3>Agendamentos Recentes</h3>
+                <div id="recent-appointments">
+                    <div class="loading">Carregando agendamentos...</div>
+                </div>
+            </div>
+
+            <div class="form-section" id="my-services-section" style="display: none;">
+                <h3>Meus Serviços</h3>
+                <div id="my-services">
+                    <div class="loading">Carregando serviços...</div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Ações Rápidas</h3>
+                <div id="quick-actions" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button onclick="window.location.href='servicos.html'" class="btn btn-blue" id="search-services-btn">
+                        <i class="fas fa-search"></i> Buscar Serviços
+                    </button>
+                    <button onclick="showCreateServiceForm()" class="btn btn-green" id="create-service-btn" style="display: none;">
+                        <i class="fas fa-plus"></i> Criar Serviço
+                    </button>
+                    <button onclick="window.location.href='agendamentos.html'" class="btn btn-outline">
+                        <i class="fas fa-calendar"></i> Ver Agendamentos
+                    </button>
+                    <button onclick="window.location.href='mensagens.html'" class="btn btn-outline">
+                        <i class="fas fa-envelope"></i> Mensagens
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-section" id="create-service-form" style="display: none;">
+                <h3>Criar Novo Serviço</h3>
+                <form id="new-service-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="service-title">Título do Serviço</label>
+                            <input type="text" id="service-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-category">Categoria</label>
+                            <select id="service-category" required>
+                                <option value="">Selecione uma categoria</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="service-price">Preço</label>
+                            <input type="number" id="service-price" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service-price-type">Tipo de Preço</label>
+                            <select id="service-price-type" required>
+                                <option value="hour">Por hora</option>
+                                <option value="day">Por dia</option>
+                                <option value="service">Por serviço</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="service-location">Localização</label>
+                        <input type="text" id="service-location" placeholder="Cidade, bairro..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="service-description">Descrição</label>
+                        <textarea id="service-description" placeholder="Descreva seu serviço..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-blue">Criar Serviço</button>
+                    <button type="button" onclick="hideCreateServiceForm()" class="btn btn-outline">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Verificar tipo de usuário e redirecionar se necessário
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('servlink_user') || 'null');
+            if (user && user.user_type === 'profissional') {
+                window.location.href = 'dashboard-prestador.html';
+                return;
+            }
+        });
+
+        // Carregar dados do dashboard
+        async function loadDashboard() {
+            try {
+                // Carregar perfil do usuário
+                const user = await fetchUserProfile();
+                if (user) {
+                    document.getElementById('user-name').textContent = user.name;
+                    
+                    // Personalizar mensagem baseada no tipo de usuário
+                    const subtitle = document.getElementById('dashboard-subtitle');
+                    if (user.user_type === 'profissional') {
+                        subtitle.textContent = 'Gerencie seus serviços e agendamentos de clientes';
+                    } else {
+                        subtitle.textContent = 'Encontre serviços e gerencie seus agendamentos';
+                    }
+                    
+                    // Personalizar botões baseado no tipo de usuário
+                    const searchBtn = document.getElementById('search-services-btn');
+                    const createBtn = document.getElementById('create-service-btn');
+                    
+                    if (user.user_type === 'profissional') {
+                        // Profissionais: mostrar botão de criar serviço
+                        createBtn.style.display = 'inline-flex';
+                        document.getElementById('my-services-section').style.display = 'block';
+                        loadMyServices();
+                        
+                        // Alterar texto do botão de busca
+                        searchBtn.innerHTML = '<i class="fas fa-list"></i> Meus Serviços';
+                        searchBtn.onclick = () => window.location.href = 'servicos.html';
+                    } else {
+                        // Clientes: manter botão de busca de serviços
+                        searchBtn.innerHTML = '<i class="fas fa-search"></i> Buscar Serviços';
+                        searchBtn.onclick = () => window.location.href = 'servicos.html';
+                    }
+                    
+                    // Carregar estatísticas específicas do usuário
+                    const userStats = await getUserStats(user.id);
+                    renderDashboardStats(userStats);
+                }
+
+                // Popular categorias para o formulário
+                await populateCategorySelect('service-category', {
+                    includePlaceholder: true,
+                    placeholderLabel: 'Selecione uma categoria',
+                    placeholderDisabled: true
+                });
+
+                // Carregar agendamentos recentes
+                const appointments = await getAppointments();
+                renderRecentAppointments(appointments.slice(0, 5));
+
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+
+        function renderDashboardStats(stats) {
+            const container = document.getElementById('dashboard-stats');
+            
+            container.innerHTML = `
+                <div class="dashboard-stat">
+                    <div class="dashboard-stat-value">${stats.total_appointments}</div>
+                    <div class="dashboard-stat-label">Meus Agendamentos</div>
+                </div>
+                <div class="dashboard-stat">
+                    <div class="dashboard-stat-value">${stats.pending_appointments}</div>
+                    <div class="dashboard-stat-label">Pendentes</div>
+                </div>
+                <div class="dashboard-stat">
+                    <div class="dashboard-stat-value">${stats.completed_appointments}</div>
+                    <div class="dashboard-stat-label">Concluídos</div>
+                </div>
+                <div class="dashboard-stat">
+                    <div class="dashboard-stat-value">${stats.avg_rating ? stats.avg_rating.toFixed(1) : '0.0'}</div>
+                    <div class="dashboard-stat-label">Minha Avaliação</div>
+                </div>
+            `;
+        }
+
+        function renderRecentAppointments(appointments) {
+            const container = document.getElementById('recent-appointments');
+            
+            if (!appointments.length) {
+                container.innerHTML = '<p class="no-results">Nenhum agendamento encontrado</p>';
+                return;
+            }
+
+            container.innerHTML = appointments.map(appointment => `
+                <div class="appointment-card">
+                    <div class="appointment-header">
+                        <h3>${appointment.service_title}</h3>
+                        <span class="appointment-status status-${appointment.status}">${getStatusText(appointment.status)}</span>
+                    </div>
+                    <div class="appointment-details">
+                        <p><strong>Data:</strong> ${formatDate(appointment.date)}</p>
+                        <p><strong>Horário:</strong> ${appointment.time}</p>
+                        <p><strong>${appointment.client_id === currentUser.id ? 'Profissional' : 'Cliente'}:</strong> ${appointment.client_id === currentUser.id ? appointment.provider_name : appointment.client_name}</p>
+                    </div>
+                    <div class="appointment-actions">
+                        <button onclick="window.location.href='agendamentos.html'" class="btn btn-outline">Ver Detalhes</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadMyServices() {
+            try {
+                const services = await getUserServices(currentUser.id);
+                const container = document.getElementById('my-services');
+                
+                if (!services.length) {
+                    container.innerHTML = '<p class="no-results">Você ainda não criou nenhum serviço</p>';
+                    return;
+                }
+
+                container.innerHTML = services.map(service => `
+                    <div class="service-card">
+                        <div class="service-image-container">
+                            <img src="${getPrimaryServiceImage(service)}" alt="${service.title}" class="service-img">
+                            <div class="service-badge">
+                                <i class="fas fa-star"></i> ${(service.avg_rating || 0).toFixed(1)} (${service.review_count || 0})
+                            </div>
+                            <div class="service-price">R$ ${formatPriceValue(service.price)}/${getPriceTypeLabel(service.price_type)}</div>
+                        </div>
+                        <div class="service-info">
+                            <div class="service-user">
+                                <img src="${getUserProfileImage(currentUser.id)}" alt="${currentUser.name}" class="service-user-img" data-provider-id="${currentUser.id}">
+                                <div class="service-user-details">
+                                    <h3>${service.title}</h3>
+                                    <p>${service.category_name}</p>
+                                </div>
+                            </div>
+                            <div class="service-desc">${service.description}</div>
+                            <div class="service-footer">
+                                <div class="service-stars">
+                                    ${generateStars(service.avg_rating || 0)}
+                                </div>
+                                <span class="service-distance">${service.location}</span>
+                            </div>
+                            <button class="service-view-profile-btn" onclick="editService(${service.id})">Editar</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar serviços:', error);
+            }
+        }
+
+        function showCreateServiceForm() {
+            document.getElementById('create-service-form').style.display = 'block';
+            document.getElementById('create-service-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideCreateServiceForm() {
+            document.getElementById('create-service-form').style.display = 'none';
+            document.getElementById('new-service-form').reset();
+        }
+
+        async function editService(serviceId) {
+            try {
+                const service = await getServiceById(serviceId);
+                if (!service) {
+                    showErrorMessage('Serviço não encontrado');
+                    return;
+                }
+
+                // Criar modal de edição
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+                modal.innerHTML = `
+                    <div class="modal-content" style="background: var(--card-bg); border-radius: 16px; padding: 2.5rem; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--text-color); margin: 0;">Editar Serviço</h2>
+                            <button onclick="this.closest('.modal-overlay').remove()" style="background: none; border: none; font-size: 1.5rem; color: var(--text-color); cursor: pointer; padding: 0.5rem; line-height: 1;">&times;</button>
+                        </div>
+                        <form id="edit-service-form">
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Título</label>
+                                <input type="text" id="edit-title" value="${service.title}" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Descrição</label>
+                                <textarea id="edit-description" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; min-height: 120px; resize: vertical;">${service.description || ''}</textarea>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Preço</label>
+                                <input type="number" id="edit-price" value="${service.price}" step="0.01" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Tipo de Preço</label>
+                                <select id="edit-price-type" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                                    <option value="hour" ${service.price_type === 'hour' ? 'selected' : ''}>Por hora</option>
+                                    <option value="day" ${service.price_type === 'day' ? 'selected' : ''}>Por dia</option>
+                                    <option value="service" ${service.price_type === 'service' ? 'selected' : ''}>Por serviço</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Localização</label>
+                                <input type="text" id="edit-location" value="${service.location}" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" class="btn btn-blue" style="flex: 1; padding: 0.875rem; font-size: 1rem; font-weight: 600;">Salvar Alterações</button>
+                                <button type="button" onclick="this.closest('.modal-overlay').remove()" class="btn btn-outline" style="flex: 1; padding: 0.875rem; font-size: 1rem;">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Preencher categoria se disponível
+                const categorySelect = document.createElement('select');
+                categorySelect.id = 'edit-category';
+                categorySelect.style.cssText = 'width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;';
+                populateCategorySelect(categorySelect, { includePlaceholder: true, placeholderLabel: 'Selecione uma categoria' }).then(() => {
+                    if (service.category_id) {
+                        categorySelect.value = service.category_id;
+                    }
+                });
+
+                const formGroup = document.createElement('div');
+                formGroup.className = 'form-group';
+                formGroup.style.marginBottom = '1.5rem';
+                formGroup.innerHTML = `
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Categoria</label>
+                `;
+                formGroup.appendChild(categorySelect);
+                document.getElementById('edit-location').parentElement.insertBefore(formGroup, document.getElementById('edit-location').parentElement);
+
+                // Submeter formulário
+                document.getElementById('edit-service-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    try {
+                        const selectedCategoryOption = categorySelect.options[categorySelect.selectedIndex];
+                        const serviceData = {
+                            title: document.getElementById('edit-title').value,
+                            description: document.getElementById('edit-description').value,
+                            price: parseFloat(document.getElementById('edit-price').value),
+                            price_type: document.getElementById('edit-price-type').value,
+                            location: document.getElementById('edit-location').value,
+                            category_id: selectedCategoryOption?.value,
+                            category: selectedCategoryOption?.dataset.slug,
+                            category_name: selectedCategoryOption?.textContent
+                        };
+                        
+                        await updateService(serviceId, serviceData);
+                        modal.remove();
+                        loadMyServices();
+                    } catch (error) {
+                        showErrorMessage('Erro ao atualizar serviço: ' + error.message);
+                    }
+                });
+            } catch (error) {
+                showErrorMessage('Erro ao carregar serviço: ' + error.message);
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+
+            // Create service form
+            const createServiceForm = document.getElementById('new-service-form');
+            if (createServiceForm) {
+                createServiceForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const categorySelect = document.getElementById('service-category');
+                    const selectedCategoryOption = categorySelect.options[categorySelect.selectedIndex];
+                    const serviceData = {
+                        title: document.getElementById('service-title').value,
+                        category_id: selectedCategoryOption?.value,
+                        category: selectedCategoryOption?.dataset.slug,
+                        price: parseFloat(document.getElementById('service-price').value),
+                        price_type: document.getElementById('service-price-type').value,
+                        location: document.getElementById('service-location').value,
+                        description: document.getElementById('service-description').value
+                    };
+
+                    try {
+                        await createService(serviceData);
+                        hideCreateServiceForm();
+                        loadMyServices();
+                    } catch (error) {
+                        showErrorMessage(error.message);
+                    }
+                });
+            }
+            
+            // Listener para atualização de foto de perfil em tempo real
+            window.addEventListener('profileImageUpdated', function(event) {
+                const { userId, imageSrc } = event.detail;
+                if (currentUser && currentUser.id === userId) {
+                    // Atualizar todas as imagens de perfil dos serviços visíveis
+                    document.querySelectorAll(`#my-services .service-user-img[data-provider-id="${userId}"]`).forEach(img => {
+                        img.src = imageSrc;
+                        img.setAttribute('src', imageSrc);
+                    });
+                }
+            });
+        });
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

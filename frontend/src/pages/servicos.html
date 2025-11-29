@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serviços | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard.html" id="dashboard-link">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html" id="appointments-link">Agendamentos</a>
+                <a href="mensagens.html" id="messages-link">Mensagens</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+                <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+                <button class="btn btn-red" id="logout-btn-desktop" onclick="logout()" style="display: none;">Sair</button>
+                <button class="mobile-menu-btn" id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html">Início</a>
+            <a href="dashboard.html" id="dashboard-link-mobile">Dashboard</a>
+            <a href="servicos.html">Serviços</a>
+            <a href="agendamentos.html" id="appointments-link-mobile">Agendamentos</a>
+            <a href="mensagens.html" id="messages-link-mobile">Mensagens</a>
+            <div class="mobile-menu-actions">
+                <a href="conta.html" class="btn btn-primary btn-block" id="account-btn-mobile" style="display: none;">Conta</a>
+                <a href="auth.html" class="btn btn-blue btn-block" id="btn-entrar-mobile">Entrar</a>
+                <button class="btn" id="dark-mode-toggle-mobile" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+                <button class="btn" id="logout-btn-mobile" onclick="logout()" style="display: none;">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main style="margin-top: 100px; padding: 2rem 0;">
+        <div class="container">
+            <div class="form-section">
+                <h3>Buscar Serviços</h3>
+                <form id="search-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="search-term">O que você procura?</label>
+                            <input type="text" id="search-term" placeholder="Ex: encanador, eletricista, diarista...">
+                        </div>
+                        <div class="form-group">
+                            <label for="search-location">Localização</label>
+                            <input type="text" id="search-location" placeholder="Cidade, bairro...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="search-category">Categoria</label>
+                            <select id="search-category"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="search-sort">Ordenar por</label>
+                            <select id="search-sort">
+                                <option value="rating">Melhor avaliados</option>
+                                <option value="price">Menor preço</option>
+                                <option value="recent">Mais recentes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-blue">Buscar</button>
+                </form>
+            </div>
+
+            <div class="form-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Resultados da Busca</h3>
+                    <span id="results-count">0 serviços encontrados</span>
+                </div>
+                <div id="services-container" class="services-grid">
+                    <div class="loading">Carregando serviços...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        let currentFilters = {};
+
+        // Carregar serviços
+        async function loadServices(filters = {}) {
+            try {
+                showLoading(document.getElementById('services-container'));
+                const services = await searchServices(filters);
+                renderServices(services, document.getElementById('services-container'));
+                updateResultsCount(services.length);
+            } catch (error) {
+                document.getElementById('services-container').innerHTML = 
+                    '<p class="no-results">Erro ao carregar serviços</p>';
+            }
+        }
+
+        function updateResultsCount(count) {
+            document.getElementById('results-count').textContent = `${count} serviço${count !== 1 ? 's' : ''} encontrado${count !== 1 ? 's' : ''}`;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Verificar se está logado antes de permitir acesso
+            const authToken = localStorage.getItem('servlink_token');
+            if (!authToken) {
+                showErrorMessage('Você precisa fazer login para ver os serviços.');
+                setTimeout(() => {
+                    window.location.href = 'auth.html';
+                }, 1500);
+                return;
+            }
+
+            await populateCategorySelect('search-category', {
+                includePlaceholder: true,
+                placeholderLabel: 'Todas as categorias',
+                placeholderValue: '',
+                placeholderDisabled: false
+            });
+
+            const initialFilters = {};
+
+            // Search form
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const filters = {
+                        search: document.getElementById('search-term').value.trim(),
+                        location: document.getElementById('search-location').value.trim(),
+                        category_id: document.getElementById('search-category').value,
+                        sort: document.getElementById('search-sort').value
+                    };
+
+                    // Remove empty filters (mas mantém sort se tiver valor)
+                    Object.keys(filters).forEach(key => {
+                        if (!filters[key] && key !== 'sort') {
+                            delete filters[key];
+                        }
+                    });
+
+                    // Se não há filtros de busca, mostrar todos os serviços
+                    currentFilters = filters;
+                    await loadServices(filters);
+                });
+            }
+
+            // Load initial filters from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('search');
+            const categoryId = urlParams.get('category');
+            
+            if (searchTerm) {
+                document.getElementById('search-term').value = searchTerm;
+                initialFilters.search = searchTerm;
+            }
+            
+            if (categoryId) {
+                document.getElementById('search-category').value = categoryId;
+                initialFilters.category_id = categoryId;
+            }
+
+            currentFilters = { ...initialFilters };
+            await loadServices(Object.keys(initialFilters).length ? initialFilters : {});
+            
+            // Listener para atualização de foto de perfil em tempo real
+            window.addEventListener('profileImageUpdated', function(event) {
+                const { userId, imageSrc } = event.detail;
+                console.log('profileImageUpdated recebido:', { userId, imageSrc });
+                
+                // Atualizar todas as imagens de perfil dos serviços visíveis usando data-provider-id
+                document.querySelectorAll('.service-user-img[data-provider-id]').forEach(img => {
+                    const providerId = String(img.getAttribute('data-provider-id'));
+                    if (providerId === String(userId)) {
+                        img.src = imageSrc;
+                        img.setAttribute('src', imageSrc);
+                        console.log('Imagem atualizada:', img);
+                    }
+                });
+                
+                // Também atualizar imagens sem data-provider-id (compatibilidade)
+                // Buscar serviços do usuário e atualizar suas imagens
+                try {
+                    const services = JSON.parse(localStorage.getItem('servlink_services') || '[]');
+                    const userServices = services.filter(s => s.provider_id === userId || String(s.provider_id) === String(userId));
+                    
+                    document.querySelectorAll('.service-user-img').forEach(img => {
+                        const serviceCard = img.closest('.service-card');
+                        if (serviceCard) {
+                            const viewButton = serviceCard.querySelector('.service-view-profile-btn');
+                            if (viewButton) {
+                                const onclickStr = viewButton.getAttribute('onclick') || '';
+                                const match = onclickStr.match(/viewService\((\d+)\)/);
+                                if (match) {
+                                    const serviceId = parseInt(match[1]);
+                                    const service = userServices.find(s => s.id === serviceId);
+                                    if (service) {
+                                        img.src = imageSrc;
+                                        img.setAttribute('src', imageSrc);
+                                        console.log('Imagem atualizada (fallback):', img);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.error('Erro ao atualizar imagens:', e);
+                }
+                
+                // Recarregar serviços após um pequeno delay para garantir atualização completa
+                setTimeout(() => {
+                    if (typeof loadServices === 'function' && currentFilters) {
+                        loadServices(currentFilters).catch(e => console.error('Erro ao recarregar serviços:', e));
+                    }
+                }, 200);
+            });
+        });
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

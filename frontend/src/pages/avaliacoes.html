@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliações | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html">Agendamentos</a>
+                <a href="mensagens.html">Mensagens</a>
+                <a href="avaliacoes.html" class="active">Avaliações</a>
+            </nav>
+            <div class="navbar-actions">
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+                <button class="btn" onclick="logout()">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main style="margin-top: 100px; padding: 2rem 0;">
+        <div class="container">
+            <div class="page-header">
+                <h1>Minhas Avaliações</h1>
+                <p>Visualize e gerencie suas avaliações</p>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="stats-grid" style="margin-bottom: 2rem;">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="avg-rating">0.0</h3>
+                        <p>Avaliação Média</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-thumbs-up"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-reviews">0</h3>
+                        <p>Total de Avaliações</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-5-star"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="five-star-count">0</h3>
+                        <p>5 Estrelas</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="recent-reviews">0</h3>
+                        <p>Últimos 30 dias</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-section">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-rating="">Todas</button>
+                    <button class="filter-btn" data-rating="5">5 Estrelas</button>
+                    <button class="filter-btn" data-rating="4">4 Estrelas</button>
+                    <button class="filter-btn" data-rating="3">3 Estrelas</button>
+                    <button class="filter-btn" data-rating="2">2 Estrelas</button>
+                    <button class="filter-btn" data-rating="1">1 Estrela</button>
+                </div>
+            </div>
+
+            <!-- Lista de Avaliações -->
+            <div class="reviews-container">
+                <div id="reviews-list" class="reviews-grid">
+                    <div class="loading">Carregando avaliações...</div>
+                </div>
+            </div>
+
+            <!-- Formulário de Nova Avaliação (apenas para clientes) -->
+            <div id="new-review-section" class="form-section" style="display: none;">
+                <h3>Nova Avaliação</h3>
+                <form id="new-review-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="service-select">Serviço</label>
+                            <select id="service-select" required>
+                                <option value="">Selecione um serviço...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="provider-select">Profissional</label>
+                            <select id="provider-select" required>
+                                <option value="">Selecione um profissional...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Avaliação</label>
+                        <div class="rating-stars">
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="review-comment">Comentário</label>
+                        <textarea id="review-comment" placeholder="Conte sua experiência com o serviço..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-blue">Enviar Avaliação</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        let currentFilter = '';
+        let allReviews = [];
+        let selectedRating = 0;
+
+        // Carregar avaliações reais
+        async function loadReviews(rating = '') {
+            try {
+                // Buscar todas as avaliações reais do localStorage
+                const allReviewsData = JSON.parse(localStorage.getItem('servlink_reviews') || '[]');
+                const allServices = JSON.parse(localStorage.getItem('servlink_services') || '[]');
+                
+                let filteredReviews = [];
+                
+                if (currentUser && currentUser.user_type === 'profissional') {
+                    // Para profissionais: carregar avaliações RECEBIDAS nos seus serviços
+                    const myServiceIds = allServices
+                        .filter(s => s.provider_id === currentUser.id)
+                        .map(s => s.id);
+                    
+                    filteredReviews = allReviewsData
+                        .filter(review => myServiceIds.includes(review.service_id))
+                        .map(review => {
+                            // Buscar dados do serviço e cliente
+                            const service = allServices.find(s => s.id === review.service_id);
+                            const users = JSON.parse(localStorage.getItem('servlink_users') || '[]');
+                            const client = users.find(u => u.id === review.client_id);
+                            
+                            return {
+                                ...review,
+                                service_title: service ? service.title : 'Serviço',
+                                client_name: client ? client.name : 'Cliente',
+                                profile_image: client ? (client.profile_image || null) : null
+                            };
+                        });
+                } else {
+                    // Para clientes: carregar avaliações FEITAS por eles
+                    filteredReviews = allReviewsData
+                        .filter(review => review.client_id === currentUser.id)
+                        .map(review => {
+                            // Buscar dados do serviço
+                            const service = allServices.find(s => s.id === review.service_id);
+                            const users = JSON.parse(localStorage.getItem('servlink_users') || '[]');
+                            const provider = service ? users.find(u => u.id === service.provider_id) : null;
+                            
+                            return {
+                                ...review,
+                                service_title: service ? service.title : 'Serviço',
+                                provider_name: provider ? provider.name : 'Profissional',
+                                profile_image: provider ? (provider.profile_image || null) : null
+                            };
+                        });
+                }
+                
+                allReviews = filteredReviews;
+                
+                // Aplicar filtro de rating se necessário
+                if (rating) {
+                    filteredReviews = filteredReviews.filter(r => r.rating == rating);
+                }
+                
+                renderReviews(filteredReviews, document.getElementById('reviews-list'));
+                updateStats();
+            } catch (error) {
+                console.error('Erro ao carregar avaliações:', error);
+                document.getElementById('reviews-list').innerHTML = 
+                    '<p class="no-results">Erro ao carregar avaliações</p>';
+                allReviews = [];
+                updateStats();
+            }
+        }
+
+        // Atualizar estatísticas
+        function updateStats() {
+            const totalReviews = allReviews.length;
+            const avgRating = totalReviews > 0 ? 
+                (allReviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews).toFixed(1) : '0.0';
+            const fiveStarCount = allReviews.filter(r => r.rating === 5).length;
+            const recentReviews = allReviews.filter(r => {
+                const reviewDate = new Date(r.created_at);
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                return reviewDate >= thirtyDaysAgo;
+            }).length;
+
+            document.getElementById('avg-rating').textContent = avgRating;
+            document.getElementById('total-reviews').textContent = totalReviews;
+            document.getElementById('five-star-count').textContent = fiveStarCount;
+            document.getElementById('recent-reviews').textContent = recentReviews;
+        }
+
+        // Carregar serviços para o formulário (apenas para clientes)
+        async function loadServicesForReview() {
+                if (currentUser && currentUser.user_type === 'cliente') {
+                try {
+                    const services = await searchServices();
+                    const serviceSelect = document.getElementById('service-select');
+                    const providerSelect = document.getElementById('provider-select');
+                    
+                    serviceSelect.innerHTML = '<option value="">Selecione um serviço...</option>';
+                    providerSelect.innerHTML = '<option value="">Selecione um profissional...</option>';
+                    
+                    services.forEach(service => {
+                        const option = document.createElement('option');
+                        option.value = service.id;
+                        option.textContent = `${service.title} - ${service.provider_name}`;
+                        serviceSelect.appendChild(option);
+                    });
+                    
+                    document.getElementById('new-review-section').style.display = 'block';
+                } catch (error) {
+                    console.error('Erro ao carregar serviços:', error);
+                }
+            }
+        }
+
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se usuário está logado
+            if (!authToken) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            // Carregar dados iniciais
+            loadReviews();
+            loadServicesForReview();
+
+            // Filtros
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remover classe active de todos os botões
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    // Adicionar classe active ao botão clicado
+                    this.classList.add('active');
+                    
+                    const rating = this.dataset.rating;
+                    currentFilter = rating;
+                    
+                    // Recarregar avaliações com filtro
+                    loadReviews(rating || '');
+                });
+            });
+
+            // Formulário de nova avaliação
+            const reviewForm = document.getElementById('new-review-form');
+            if (reviewForm) {
+                reviewForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    if (selectedRating === 0) {
+                        showErrorMessage('Selecione uma avaliação');
+                        return;
+                    }
+                    
+                    const serviceId = document.getElementById('service-select').value;
+                    const providerId = document.getElementById('provider-select').value;
+                    const comment = document.getElementById('review-comment').value;
+                    
+                    if (!serviceId || !providerId || !comment) {
+                        showErrorMessage('Preencha todos os campos obrigatórios');
+                        return;
+                    }
+                    
+                    try {
+                        const reviewData = {
+                            service_id: serviceId,
+                            provider_id: providerId,
+                            rating: selectedRating,
+                            comment: comment
+                        };
+                        
+                        await createReview(reviewData);
+                        reviewForm.reset();
+                        selectedRating = 0;
+                        updateRatingStars(0);
+                        // Recarregar avaliações após criar nova
+                        await loadReviews(currentFilter);
+                        showSuccessMessage('Avaliação enviada com sucesso!');
+                    } catch (error) {
+                        console.error('Erro ao criar avaliação:', error);
+                    }
+                });
+            }
+
+            // Rating stars
+            const ratingStars = document.querySelectorAll('.rating-stars i');
+            ratingStars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    selectedRating = rating;
+                    updateRatingStars(rating);
+                });
+
+                star.addEventListener('mouseenter', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    updateRatingStars(rating);
+                });
+
+                star.addEventListener('mouseleave', function() {
+                    updateRatingStars(selectedRating);
+                });
+            });
+        });
+
+        function updateRatingStars(rating) {
+            const stars = document.querySelectorAll('.rating-stars i');
+            stars.forEach((star, index) => {
+                const starRating = index + 1;
+                if (starRating <= rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

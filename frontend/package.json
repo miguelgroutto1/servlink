@@ -1,0 +1,34 @@
+{
+  "name": "servlink-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for ServLink - Local Services Marketplace",
+  "main": "src/pages/index.html",
+  "scripts": {
+    "start": "http-server src -p 3000 -o",
+    "dev": "http-server src -p 3000 -o",
+    "build": "echo 'No build process needed for static HTML/CSS/JS'",
+    "serve": "http-server src -p 3000"
+  },
+  "keywords": [
+    "marketplace",
+    "services",
+    "local",
+    "frontend",
+    "html",
+    "css",
+    "javascript"
+  ],
+  "author": "TCC Project",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

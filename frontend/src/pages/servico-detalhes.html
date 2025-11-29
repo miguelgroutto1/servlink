@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Serviço | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard.html" id="dashboard-link">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html" id="appointments-link">Agendamentos</a>
+                <a href="mensagens.html" id="messages-link">Mensagens</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+                <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+                <button class="mobile-menu-btn" id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html">Início</a>
+            <a href="dashboard.html" id="dashboard-link-mobile">Dashboard</a>
+            <a href="servicos.html">Serviços</a>
+            <a href="agendamentos.html" id="appointments-link-mobile">Agendamentos</a>
+            <a href="mensagens.html" id="messages-link-mobile">Mensagens</a>
+            <div class="mobile-menu-actions">
+                <a href="auth.html" class="btn btn-blue btn-block" id="btn-entrar-mobile">Entrar</a>
+                <a href="conta.html" class="btn btn-primary btn-block" id="account-btn-mobile" style="display: none;">Conta</a>
+                <button class="btn" id="dark-mode-toggle-mobile" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main style="margin-top: 100px; padding: 2rem 0;">
+        <div class="container">
+            <div id="service-details" class="service-details">
+                <div class="loading">Carregando...</div>
+            </div>
+
+            <div class="form-section" id="appointment-form" style="display: none;">
+                <h3>Agendar Serviço</h3>
+                <form id="new-appointment-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appointment-date">Data</label>
+                            <input type="date" id="appointment-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointment-time">Horário</label>
+                            <input type="time" id="appointment-time" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointment-notes">Observações (opcional)</label>
+                        <textarea id="appointment-notes" placeholder="Descreva detalhes específicos do serviço..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-blue">Agendar Serviço</button>
+                </form>
+            </div>
+
+            <div class="form-section" id="review-form" style="display: none;">
+                <h3>Avaliar Serviço</h3>
+                <form id="new-review-form">
+                    <div class="form-group">
+                        <label>Avaliação</label>
+                        <div class="rating-stars">
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="review-comment">Comentário</label>
+                        <textarea id="review-comment" placeholder="Conte sua experiência com o serviço..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-blue">Enviar Avaliação</button>
+                </form>
+            </div>
+
+            <div class="form-section">
+                <h3>Avaliações</h3>
+                <div id="reviews-container">
+                    <div class="loading">Carregando avaliações...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Definir constante de imagem padrão localmente para garantir acesso
+        const DEFAULT_PROFILE_IMAGE_LOCAL = 'data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="%23E0E0E0"/><circle cx="50" cy="35" r="15" fill="%23999999"/><path d="M20 75C15 75 10 80 10 85V95C10 97 12 100 15 100H85C87 95 90 95 90 95V85C90 80 85 75 80 75H20Z" fill="%23999999"/></svg>';
+        
+        let currentService = null;
+        let selectedRating = 0;
+
+        // Carregar detalhes do serviço
+        async function loadServiceDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const serviceId = urlParams.get('id');
+            
+            if (!serviceId) {
+                document.getElementById('service-details').innerHTML = 
+                    '<p class="error-message">ID do serviço não fornecido</p>';
+                return;
+            }
+
+            try {
+                const service = await getServiceById(serviceId);
+                if (service) {
+                    currentService = service;
+                    renderServiceDetails(service);
+                    loadReviews(serviceId);
+                }
+            } catch (error) {
+                document.getElementById('service-details').innerHTML = 
+                    '<p class="error-message">Erro ao carregar detalhes do serviço</p>';
+            }
+        }
+
+        function renderServiceDetails(service) {
+            const container = document.getElementById('service-details');
+            
+            // Obter imagem do perfil com limpeza (mesma lógica usada em renderServices)
+            const rawImg = (getUserProfileImage && typeof getUserProfileImage === 'function')
+                ? (getUserProfileImage(service.provider_id) || '')
+                : '';
+            // Remove possíveis aspas que possam quebrar o HTML e trim
+            const cleanImg = String(rawImg).replace(/["']/g, '').trim();
+            const imgSrc = cleanImg === '' ? DEFAULT_PROFILE_IMAGE_LOCAL : cleanImg;
+            
+            container.innerHTML = `
+                <div class="service-details-header">
+                    <img alt="${service.provider_name || 'Prestador'}" class="service-details-user-img" data-provider-id="${service.provider_id}">
+                    <div class="service-details-user-info">
+                        <h2>${service.provider_name || 'Prestador'}</h2>
+                        <p>${service.category_name || service.category || 'Categoria'}</p>
+                        <div class="service-stars">
+                            ${generateStars(service.avg_rating || 0)}
+                            <span>(${service.review_count || 0} avaliações)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-details-content">
+                    <h3>${service.title}</h3>
+                    <p>${service.description}</p>
+                    <div class="service-details-price">
+                        R$ ${formatPriceValue(service.price)}/${getPriceTypeLabel(service.price_type)}
+                    </div>
+                    <p><strong>Localização:</strong> ${service.location}</p>
+                    ${service.availability ? `<p><strong>Disponibilidade:</strong> ${service.availability === 'full-time' ? 'Tempo Integral' : service.availability === 'part-time' ? 'Meio Período' : service.availability === 'weekends' ? 'Fins de Semana' : 'Flexível'}</p>` : ''}
+                    ${service.experience_years ? `<p><strong>Experiência:</strong> ${service.experience_years} anos</p>` : ''}
+                </div>
+                
+                <div class="service-details-actions">
+                    ${currentUser && currentUser.id !== service.provider_id ? 
+                        `<button onclick="showAppointmentForm()" class="btn btn-blue">Agendar Serviço</button>` : 
+                        '<p>Você não pode agendar seu próprio serviço</p>'
+                    }
+                    ${currentUser && currentUser.user_type === 'cliente' ? 
+                        `<button onclick="showReviewForm()" class="btn btn-outline">Avaliar</button>` : ''
+                    }
+                </div>
+            `;
+            
+            // Definir src da imagem após criar o elemento (mais seguro)
+            const profileImg = container.querySelector('.service-details-user-img');
+            if (profileImg) {
+                // Definir src usando setAttribute para garantir que seja válido
+                profileImg.setAttribute('src', imgSrc);
+                profileImg.src = imgSrc;
+                
+                // Verificar se o src é válido
+                const currentSrc = profileImg.getAttribute('src') || profileImg.src || '';
+                if (!currentSrc || 
+                    currentSrc.trim() === '' || 
+                    currentSrc === 'null' || 
+                    currentSrc === 'undefined' || 
+                    currentSrc.includes('undefined') || 
+                    currentSrc.includes('null')) {
+                    profileImg.src = DEFAULT_PROFILE_IMAGE_LOCAL;
+                    profileImg.setAttribute('src', DEFAULT_PROFILE_IMAGE_LOCAL);
+                }
+                
+                // Adicionar event listener para tratamento de erro na imagem
+                profileImg.addEventListener('error', function() {
+                    this.onerror = null;
+                    this.src = DEFAULT_PROFILE_IMAGE_LOCAL;
+                    this.setAttribute('src', DEFAULT_PROFILE_IMAGE_LOCAL);
+                });
+                
+                // Verificar novamente após um pequeno delay para garantir
+                setTimeout(() => {
+                    const checkSrc = profileImg.src || profileImg.getAttribute('src') || '';
+                    if (!checkSrc || 
+                        checkSrc.trim() === '' || 
+                        checkSrc === 'null' || 
+                        checkSrc === 'undefined' ||
+                        checkSrc.includes('undefined') ||
+                        checkSrc.includes('null')) {
+                        profileImg.src = DEFAULT_PROFILE_IMAGE_LOCAL;
+                        profileImg.setAttribute('src', DEFAULT_PROFILE_IMAGE_LOCAL);
+                    }
+                }, 50);
+            }
+        }
+
+        async function loadReviews(serviceId) {
+            try {
+                const reviews = await getReviews(serviceId);
+                renderReviews(reviews, document.getElementById('reviews-container'));
+            } catch (error) {
+                document.getElementById('reviews-container').innerHTML = 
+                    '<p class="no-results">Erro ao carregar avaliações</p>';
+            }
+        }
+
+        function showAppointmentForm() {
+            document.getElementById('appointment-form').style.display = 'block';
+            document.getElementById('appointment-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showReviewForm() {
+            document.getElementById('review-form').style.display = 'block';
+            document.getElementById('review-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            loadServiceDetails();
+            
+            // Listener para atualização de foto de perfil em tempo real
+            window.addEventListener('profileImageUpdated', function(event) {
+                const { userId, imageSrc } = event.detail;
+                if (currentService && currentService.provider_id === userId) {
+                    const profileImg = document.querySelector('.service-details-user-img');
+                    if (profileImg) {
+                        profileImg.src = imageSrc;
+                        profileImg.setAttribute('src', imageSrc);
+                    }
+                }
+            });
+
+            // Appointment form
+            const appointmentForm = document.getElementById('new-appointment-form');
+            if (appointmentForm) {
+                appointmentForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const appointmentData = {
+                        service_id: currentService.id,
+                        date: document.getElementById('appointment-date').value,
+                        time: document.getElementById('appointment-time').value,
+                        notes: document.getElementById('appointment-notes').value
+                    };
+
+                    try {
+                        await createAppointment(appointmentData);
+                        document.getElementById('appointment-form').style.display = 'none';
+                        appointmentForm.reset();
+                    } catch (error) {
+                        console.error('Erro ao criar agendamento:', error);
+                    }
+                });
+            }
+
+            // Review form
+            const reviewForm = document.getElementById('new-review-form');
+            if (reviewForm) {
+                reviewForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    if (selectedRating === 0) {
+                        alert('Selecione uma avaliação');
+                        return;
+                    }
+
+                    const reviewData = {
+                        service_id: currentService.id,
+                        rating: selectedRating,
+                        comment: document.getElementById('review-comment').value
+                    };
+
+                    try {
+                        await createReview(reviewData);
+                        document.getElementById('review-form').style.display = 'none';
+                        reviewForm.reset();
+                        selectedRating = 0;
+                        updateRatingStars(0);
+                        loadReviews(currentService.id);
+                    } catch (error) {
+                        console.error('Erro ao criar avaliação:', error);
+                    }
+                });
+            }
+
+            // Rating stars
+            const ratingStars = document.querySelectorAll('.rating-stars i');
+            ratingStars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    selectedRating = rating;
+                    updateRatingStars(rating);
+                });
+
+                star.addEventListener('mouseenter', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    updateRatingStars(rating);
+                });
+
+                star.addEventListener('mouseleave', function() {
+                    updateRatingStars(selectedRating);
+                });
+            });
+        });
+
+        function updateRatingStars(rating) {
+            const stars = document.querySelectorAll('.rating-stars i');
+            stars.forEach((star, index) => {
+                const starRating = index + 1;
+                if (starRating <= rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

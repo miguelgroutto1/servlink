@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html">Início</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="mensagens.html" id="messages-link">Mensagens</a>
+                <a href="dashboard.html" id="dashboard-link">Dashboard</a>
+                <a href="agendamentos.html" id="appointments-link">Agendamentos</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+                <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+                <button class="mobile-menu-btn" id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html">Início</a>
+            <a href="servicos.html">Serviços</a>
+            <a href="mensagens.html" id="messages-link-mobile">Mensagens</a>
+            <a href="dashboard.html" id="dashboard-link-mobile">Dashboard</a>
+            <a href="agendamentos.html" id="appointments-link-mobile">Agendamentos</a>
+            <div class="mobile-menu-actions">
+                <a href="auth.html" class="btn btn-blue btn-block" id="btn-entrar-mobile">Entrar</a>
+                <a href="conta.html" class="btn btn-primary btn-block" id="account-btn-mobile" style="display: none;">Conta</a>
+                <button class="btn" id="dark-mode-toggle-mobile" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="auth-main-content">
+        <div class="form-card">
+            <div class="form-header">
+                <h1>Bem-vindo ao ServLink</h1>
+                <p>Entre ou cadastre-se para continuar</p>
+            </div>
+
+            <div class="form-tabs">
+                <button class="tab-button tab-active" id="login-tab">Entrar</button>
+                <button class="tab-button" id="signup-tab">Cadastrar</button>
+            </div>
+
+            <div class="form-container">
+                <!-- Login Form -->
+                <div class="form-content" id="login-form">
+                    <form id="login-form-submit">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Senha</label>
+                            <div class="password-input-group">
+                                <input type="password" id="login-password" class="form-input" required>
+                                <button type="button" class="password-toggle" id="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="remember-forgot-container">
+                            <div class="remember-me">
+                                <input type="checkbox" id="remember-me" class="custom-checkbox">
+                                <label for="remember-me">Lembrar de mim</label>
+                            </div>
+                            <!-- <a href="recuperar-senha.html" class="form-link">Esqueceu a senha?</a> -->
+                        </div>
+                        <button type="submit" class="btn btn-blue btn-block">Entrar</button>
+                    </form>
+
+                    <div class="divider">
+                        <span>ou</span>
+                    </div>
+
+                    <!-- <div class="social-buttons">
+                        <button class="social-btn google">
+                            <img src="../images/google.png" alt="Google" width="20" height="20">
+                            <span>Google</span>
+                        </button>
+                        <button class="social-btn facebook">
+                            <img src="../images/facebook.png" alt="Facebook" width="20" height="20">
+                            <span>Facebook</span>
+                        </button>
+                    </div> -->
+
+                    <div class="form-footer">
+                        <p>Não tem uma conta? <a href="#" class="form-link" id="to-signup">Cadastre-se</a></p>
+                    </div>
+                </div>
+
+                <!-- Signup Form -->
+                <div class="form-content hidden" id="signup-form">
+                    <form id="signup-form-submit">
+                        <div class="form-group">
+                            <label for="register-name">Nome Completo</label>
+                            <input type="text" id="register-name" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-phone">Telefone</label>
+                            <input type="tel" id="register-phone" class="form-input" placeholder="(11) 99999-9999" pattern="[\(]?[0-9]{2}[\)]?[\s]?[0-9]{4,5}[\-]?[0-9]{4}" title="Formato: (11) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-address">Endereço</label>
+                            <input type="text" id="register-address" class="form-input" placeholder="Rua, número, bairro">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="register-city">Cidade</label>
+                                <input type="text" id="register-city" class="form-input" placeholder="São Paulo">
+                            </div>
+                            <div class="form-group">
+                                <label for="register-state">Estado</label>
+                                <input type="text" id="register-state" class="form-input" placeholder="SP">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-user-type">Tipo de Usuário</label>
+                            <select id="register-user-type" class="form-input" required>
+                                <option value="">Selecione...</option>
+                                <option value="cliente">Cliente</option>
+                                <option value="profissional">Profissional</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Senha</label>
+                            <div class="password-input-group">
+                                <input type="password" id="register-password" class="form-input" required>
+                                <button type="button" class="password-toggle" id="toggle-signup-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-confirm-password">Confirmar Senha</label>
+                            <input type="password" id="register-confirm-password" class="form-input" required>
+                        </div>
+                        <div class="terms-text">
+                            <input type="checkbox" id="agree-terms" class="custom-checkbox" required>
+                            <label for="agree-terms">Concordo com os <a href="#" class="form-link">Termos de Uso</a> e <a href="#" class="form-link">Política de Privacidade</a></label>
+                        </div>
+                        <button type="submit" class="btn btn-blue btn-block">Cadastrar</button>
+                    </form>
+
+                    <div class="divider">
+                        <span>ou</span>
+                    </div>
+
+                    <!-- <div class="social-buttons">
+                        <button class="social-btn google">
+                            <img src="../images/google.png" alt="Google" width="20" height="20">
+                            <span>Google</span>
+                        </button>
+                        <button class="social-btn facebook">
+                            <img src="../images/facebook.png" alt="Facebook" width="20" height="20">
+                            <span>Facebook</span>
+                        </button>
+                    </div> -->
+
+                    <div class="form-footer">
+                        <p>Já tem uma conta? <a href="#" class="form-link" id="to-login">Entrar</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Verificar se usuário já está logado
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('servlink_token');
+            if (token) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+
+        // Login form submission
+        document.getElementById('login-form-submit').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                await login(email, password);
+            } catch (error) {
+                console.error('Erro no login:', error);
+            }
+        });
+
+        // Signup form submission
+        document.getElementById('signup-form-submit').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const phone = document.getElementById('register-phone').value;
+            
+            if (password !== confirmPassword) {
+                showErrorMessage('As senhas não coincidem');
+                return;
+            }
+            
+            // Validar telefone (formato básico)
+            if (phone && !/^[\d\s\(\)\-]+$/.test(phone) || (phone && phone.replace(/\D/g, '').length < 10)) {
+                showErrorMessage('Por favor, digite um telefone válido (ex: (11) 99999-9999)');
+                return;
+            }
+            
+            const userData = {
+                name: document.getElementById('register-name').value,
+                email: document.getElementById('register-email').value,
+                password: password,
+                phone: phone,
+                address: document.getElementById('register-address').value,
+                city: document.getElementById('register-city').value,
+                state: document.getElementById('register-state').value,
+                user_type: document.getElementById('register-user-type').value
+            };
+            
+            try {
+                await register(userData);
+            } catch (error) {
+                console.error('Erro no registro:', error);
+            }
+        });
+
+        // Social login buttons (simulados)
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showErrorMessage('Login social será implementado em breve!');
+            });
+        });
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

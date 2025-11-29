@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServLink | Marketplace de Serviços Locais</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+    <div class="container navbar">
+        <div class="navbar-brand">
+            <i class="fas fa-hands-helping"></i>
+            <h1>ServLink</h1>
+        </div>
+        <nav class="navbar-links">
+            <a href="#home" data-hide-when="authenticated">Início</a>
+            <a href="#categories" data-hide-when="authenticated">Categorias</a>
+            <a href="dashboard.html" id="dashboard-link" data-requires-auth="true" data-show-when="authenticated" style="display: none;">Dashboard</a>
+            <a href="#services" id="services-nav-link" data-service-link="true">Serviços</a>
+            <a href="agendamentos.html" id="appointments-link" data-requires-auth="true" data-show-when="authenticated" style="display: none;">Agendamentos</a>
+            <a href="mensagens.html" id="messages-link" data-requires-auth="true" data-show-when="authenticated" style="display: none;">Mensagens</a>
+            <a href="#about" data-hide-when="authenticated">Sobre</a>
+            <a href="#contact" data-hide-when="authenticated">Contato</a>
+        </nav>
+        <div class="navbar-actions">
+            <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+            <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+            <button class="mobile-menu-btn" id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+            <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#home" data-hide-when="authenticated">Início</a>
+        <a href="#categories" data-hide-when="authenticated">Categorias</a>
+        <a href="dashboard.html" id="dashboard-link-mobile" data-requires-auth="true" data-show-when="authenticated" style="display: none;">Dashboard</a>
+        <a href="#services" id="services-nav-link-mobile" data-service-link="true">Serviços</a>
+        <a href="agendamentos.html" id="appointments-link-mobile" data-requires-auth="true" data-show-when="authenticated" style="display: none;">Agendamentos</a>
+        <a href="mensagens.html" id="messages-link-mobile" data-requires-auth="true" data-show-when="authenticated" style="display: none;">Mensagens</a>
+        <a href="#about" data-hide-when="authenticated">Sobre</a>
+        <a href="#contact" data-hide-when="authenticated">Contato</a>
+        <div class="mobile-menu-actions">
+            <a href="auth.html" class="btn btn-blue btn-block" id="btn-entrar-mobile">Entrar</a>
+            <a href="conta.html" class="btn btn-primary btn-block" id="account-btn-mobile" style="display: none;">Conta</a>
+            <button class="btn" id="dark-mode-toggle-mobile" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+</header>
+<section class="hero-gradient" id="home">
+    <div class="container hero-content">
+        <div class="hero-left">
+            <h2 class="hero-title">Encontre os melhores serviços perto de você</h2>
+            <p class="hero-desc">Conectamos profissionais locais com pessoas que precisam de seus serviços.</p>
+            <form class="hero-search" id="hero-search-form">
+                <div class="input-group">
+                    <input type="text" placeholder="Qual serviço você procura?" class="input" id="hero-search-input">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button type="submit" class="btn btn-yellow" id="hero-search-button">Buscar</button>
+            </form>
+            <div class="hero-populares">
+                <span>Populares:</span>
+                <a href="#" onclick="requireLogin('servicos.html?search=Encanador'); return false;">Encanador</a>
+                <a href="#" onclick="requireLogin('servicos.html?search=Eletricista'); return false;">Eletricista</a>
+                <a href="#" onclick="requireLogin('servicos.html?search=Diarista'); return false;">Diarista</a>
+            </div>
+            
+        </div>
+        <div class="hero-right">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Profissional local" class="hero-img">
+        </div>
+    </div>
+</section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat">
+                    <div class="stat-value stat-blue">5K+</div>
+                    <div class="stat-label">Profissionais</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value stat-green">50+</div>
+                    <div class="stat-label">Categorias</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value stat-yellow">20K+</div>
+                    <div class="stat-label">Serviços Concluídos</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value stat-purple">95%</div>
+                    <div class="stat-label">Satisfação dos Clientes</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section" id="categories">
+        <div class="container">
+            <div class="section-title">Navegue por Categorias</div>
+            <div class="section-desc">Encontre profissionais especializados em diversas áreas de serviço</div>
+            <div class="categories-grid">
+                <div class="category-card" onclick="requireLogin('servicos.html?category=1')" style="cursor: pointer;">
+                    <div class="category-icon cat-blue"><i class="fas fa-tools"></i></div>
+                    <div class="category-title">Reparos</div>
+                    <div class="category-count">320 profissionais</div>
+                </div>
+                <div class="category-card" onclick="requireLogin('servicos.html?category=2')" style="cursor: pointer;">
+                    <div class="category-icon cat-green"><i class="fas fa-home"></i></div>
+                    <div class="category-title">Limpeza</div>
+                    <div class="category-count">210 profissionais</div>
+                </div>
+                <div class="category-card" onclick="requireLogin('servicos.html?category=3')" style="cursor: pointer;">
+                    <div class="category-icon cat-yellow"><i class="fas fa-paint-roller"></i></div>
+                    <div class="category-title">Pintura</div>
+                    <div class="category-count">180 profissionais</div>
+                </div>
+                <div class="category-card" onclick="requireLogin('servicos.html?category=4')" style="cursor: pointer;">
+                    <div class="category-icon cat-purple"><i class="fas fa-plug"></i></div>
+                    <div class="category-title">Elétrica</div>
+                    <div class="category-count">250 profissionais</div>
+                </div>
+                <div class="category-card" onclick="requireLogin('servicos.html?category=5')" style="cursor: pointer;">
+                    <div class="category-icon cat-red"><i class="fas fa-faucet"></i></div>
+                    <div class="category-title">Encanamento</div>
+                    <div class="category-count">190 profissionais</div>
+                </div>
+                <div class="category-card" onclick="requireLogin('servicos.html?category=6')" style="cursor: pointer;">
+                    <div class="category-icon cat-indigo"><i class="fas fa-leaf"></i></div>
+                    <div class="category-title">Jardinagem</div>
+                    <div class="category-count">150 profissionais</div>
+                </div>
+            </div>
+            <button class="categories-btn" onclick="requireLogin('servicos.html')">Entre Outros</button>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section" id="services">
+        <div class="container">
+            <div class="section-title">Serviços em Destaque</div>
+            <div class="section-desc">Profissionais melhor avaliados perto da sua localização</div>
+            <div class="services-grid" id="services-grid-home">
+                <!-- Serviços em destaque (visual) -->
+                <div class="service-card hidden">
+                    <div class="service-image-container">
+                        <img src="https://images.unsplash.com/photo-1621905251918-48416bd8575a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Encanador Profissional" class="service-img">
+                        <div class="service-badge">
+                            <i class="fas fa-star"></i> 4.9 (127)
+                        </div>
+                        <div class="service-price">R$ 150,00/visita</div>
+                    </div>
+                    <div class="service-info">
+                        <div class="service-user">
+                            <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Carlos Silva" class="service-user-img">
+                            <div class="service-user-details">
+                                <h3 style="font-weight: 600; margin: 0 0 0.25rem 0; color: var(--text-color);">Reparação de Encanamento</h3>
+                                <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Carlos Silva • Encanamento</p>
+                            </div>
+                        </div>
+                        <div class="service-desc">Reparo completo de vazamentos, troca de tubulações e instalações hidráulicas. Atendimento rápido e com garantia.</div>
+                        <div class="service-footer">
+                            <div class="service-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="service-distance">São Paulo, SP</span>
+                        </div>
+                        <button class="service-view-profile-btn" onclick="requireLogin('servicos.html')">Ver Perfil</button>
+                    </div>
+                </div>
+                <div class="service-card hidden">
+                    <div class="service-image-container">
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Eletricista" class="service-img">
+                        <div class="service-badge">
+                            <i class="fas fa-star"></i> 4.8 (89)
+                        </div>
+                        <div class="service-price">R$ 120,00/visita</div>
+                    </div>
+                    <div class="service-info">
+                        <div class="service-user">
+                            <img src="https://randomuser.me/api/portraits/men/42.jpg" alt="Roberto Santos" class="service-user-img">
+                            <div class="service-user-details">
+                                <h3 style="font-weight: 600; margin: 0 0 0.25rem 0; color: var(--text-color);">Instalações Elétricas</h3>
+                                <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Roberto Santos • Elétrica</p>
+                            </div>
+                        </div>
+                        <div class="service-desc">Instalação elétrica residencial e comercial. Resolução de problemas elétricos com segurança e qualidade.</div>
+                        <div class="service-footer">
+                            <div class="service-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="service-distance">Rio de Janeiro, RJ</span>
+                        </div>
+                        <button class="service-view-profile-btn" onclick="requireLogin('servicos.html')">Ver Perfil</button>
+                    </div>
+                </div>
+                <div class="service-card hidden">
+                    <div class="service-image-container">
+                        <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Diarista" class="service-img">
+                        <div class="service-badge">
+                            <i class="fas fa-star"></i> 5.0 (156)
+                        </div>
+                        <div class="service-price">R$ 80,00/hora</div>
+                    </div>
+                    <div class="service-info">
+                        <div class="service-user">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Ana Paula" class="service-user-img">
+                            <div class="service-user-details">
+                                <h3 style="font-weight: 600; margin: 0 0 0.25rem 0; color: var(--text-color);">Limpeza Residencial</h3>
+                                <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Ana Paula • Limpeza</p>
+                            </div>
+                        </div>
+                        <div class="service-desc">Limpeza completa e organizada da sua casa. Profissional experiente e confiável. Produtos de qualidade.</div>
+                        <div class="service-footer">
+                            <div class="service-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="service-distance">Belo Horizonte, MG</span>
+                        </div>
+                        <button class="service-view-profile-btn" onclick="requireLogin('servicos.html')">Ver Perfil</button>
+                    </div>
+                </div>
+            </div>
+            <button class="services-btn btn-icon" onclick="requireLogin('servicos.html')"><span>Ver Mais Serviços</span><i class="fas fa-arrow-right"></i></button>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-section">
+        <div class="container">
+            <div class="section-title">Como Funciona</div>
+            <div class="section-desc">Conecte-se com profissionais em apenas 3 passos simples</div>
+            <div class="how-grid">
+                <div class="how-card hidden">
+                    <div class="how-step how-blue">1</div>
+                    <h3>Encontre o Serviço</h3>
+                    <p>Busque pelo serviço que você precisa ou navegue pelas categorias disponíveis.</p>
+                </div>
+                <div class="how-card hidden">
+                    <div class="how-step how-green">2</div>
+                    <h3>Escolha o Profissional</h3>
+                    <p>Veja avaliações, preços e disponibilidade, e selecione o melhor profissional para seu projeto.</p>
+                </div>
+                <div class="how-card hidden">
+                    <div class="how-step how-purple">3</div>
+                    <h3>Contrate e Avalie</h3>
+                    <p>Combine os detalhes diretamente com o profissional e após o serviço, deixe sua avaliação.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-title">O Que Dizem Nossos Clientes</div>
+            <div class="section-desc">Avaliações reais de pessoas que usaram nossos serviços</div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card hidden">
+                    <div class="testimonial-header">
+                        <div class="testimonial-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="testimonial-date">2 semanas atrás</span>
+                    </div>
+                    <div class="testimonial-text">"Encontrei um eletricista excelente que resolveu meu problema rapidamente. O serviço foi impecável e o preço justo. Recomendo muito!"</div>
+                    <div class="testimonial-user">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Maria Oliveira" class="testimonial-user-img">
+                        <div class="testimonial-user-details">
+                            <h4>Maria Oliveira</h4>
+                            <p>São Paulo, SP</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card hidden">
+                    <div class="testimonial-header">
+                        <div class="testimonial-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="testimonial-date">1 mês atrás</span>
+                    </div>
+                    <div class="testimonial-text">"A diarista que contratei foi maravilhosa! Minha casa ficou impecável e ela foi super atenciosa. Já marquei os próximos serviços com ela."</div>
+                    <div class="testimonial-user">
+                        <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="José Pereira" class="testimonial-user-img">
+                        <div class="testimonial-user-details">
+                            <h4>José Pereira</h4>
+                            <p>Rio de Janeiro, RJ</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card hidden">
+                    <div class="testimonial-header">
+                        <div class="testimonial-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span class="testimonial-date">3 meses atrás</span>
+                    </div>
+                    <div class="testimonial-text">"Precisava urgentemente de um encanador e em poucos minutos encontrei um ótimo profissional perto da minha casa. Serviço rápido e de qualidade!"</div>
+                    <div class="testimonial-user">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Ana Carolina" class="testimonial-user-img">
+                        <div class="testimonial-user-details">
+                            <h4>Ana Carolina</h4>
+                            <p>Belo Horizonte, MG</p>
+                        <br>                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="section-title cta-title">Pronto para encontrar o profissional perfeito?</h2>
+            <div class="section-desc cta-desc">Cadastre-se gratuitamente e comece a explorar os melhores serviços da sua região</div>
+            <div class="cta-btns">
+                <a href="auth.html" class="btn btn-outline-blue">Cadastrar-se</a>
+                <button class="btn btn-outline-white">Saiba Mais</button>
+            </div>
+        </div>
+    </section>
+    <!-- FAQ Section -->
+    <section class="faq-section" id="about">
+        <div class="container">
+            <div class="section-title">Perguntas Frequentes</div>
+            <div class="section-desc">Tire suas dúvidas sobre como funciona nosso marketplace</div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">Como posso contratar um serviço? <i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>Para contratar um serviço, primeiro busque pelo tipo de profissional que você precisa na barra de pesquisa. Em seguida, navegue pelos perfis disponíveis, verificando avaliações, preços e disponibilidade. Quando encontrar o profissional ideal, clique em "Agendar" e combine os detalhes do serviço diretamente com ele.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Quais são as formas de pagamento? <i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>O pagamento pode ser realizado diretamente ao profissional, combinado entre as partes. Algumas opções incluem dinheiro, cartão de crédito/débito (se o profissional oferecer essa opção) ou transferência bancária. Em breve teremos também pagamento integrado pelo app para maior segurança.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Como funciona o sistema de avaliações? <i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>Após a conclusão de um serviço, o cliente recebe um convite para avaliar o profissional em uma escala de 1 a 5 estrelas e pode deixar um comentário sobre sua experiência. Essas avaliações são públicas e ajudam outros clientes a escolherem os melhores profissionais. Também verificamos avaliações para prevenir fraudes.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">Posso me cadastrar como profissional? <i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>Sim! Se você oferece algum serviço local, pode se cadastrar como profissional em nosso marketplace. Basta criar uma conta, preencher seu perfil com informações detalhadas sobre seus serviços, experiência e áreas de atuação. Todos os profissionais passam por uma verificação básica antes de serem liberados na plataforma.</p></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">O LocalConnect cobra alguma taxa? <i class="fas fa-chevron-down"></i></button>
+                    <div class="faq-answer"><p>Atualmente, não cobramos nenhuma taxa dos clientes que buscam serviços na plataforma. Para os profissionais, existe uma pequena comissão por serviço concluído, que varia de acordo com a categoria. Tudo isso é transparente e informado antes da prestação do serviço.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="section-title">Entre em Contato</div>
+            <div class="section-desc">Tem alguma dúvida ou sugestão? Mande uma mensagem para nossa equipe</div>
+            <div class="contact-grid">
+                <div>
+                    <form class="contact-form">
+                        <label for="name">Seu Nome</label>
+                        <input type="text" id="name">
+                        <label for="email">Seu Email</label>
+                        <input type="email" id="email">
+                        <label for="subject">Assunto</label>
+                        <input type="text" id="subject">
+                        <label for="message">Mensagem</label>
+                        <textarea id="message" rows="4"></textarea>
+                        <button type="submit" class="btn btn-blue btn-block">Enviar Mensagem</button>
+                    </form>
+                </div>
+                <div>
+                    <div class="contact-info">
+                        <h3>Informações de Contato</h3>
+                        <div class="contact-info-list">
+                            <div class="contact-info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div>
+                                    <h4>Endereço</h4>
+                                    <p>R. Aviador Gomes Ribeiro, 34-99-34-1<br>Bauru, SP<br>17030-530</p>
+                                </div>
+                            </div>
+                            <div class="contact-info-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <h4>Email</h4>
+                                    <p>contato@servlink.com.br</p>
+                                </div>
+                            </div>
+                            <div class="contact-info-item">
+                                <i class="fas fa-phone-alt"></i>
+                                <div>
+                                    <h4>Telefone</h4>
+                                    <p>(14) 98808-2700</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="contact-social">
+                            <h4>Siga-nos nas redes sociais</h4>
+                            <div class="contact-social-links">
+                                <a href="#" class="contact-social-link facebook"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="contact-social-link twitter"><i class="fab fa-twitter"></i></a>
+                                <a href="#" class="contact-social-link instagram"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="contact-social-link whatsapp"><i class="fab fa-whatsapp"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand"><i class="fas fa-hands-helping"></i><h3>ServLink</h3></div>
+                    <p class="footer-description">Conectando quem precisa com quem faz. Simplificando a forma como você encontra serviços locais de qualidade.</p>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Links Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Início</a></li>
+                        <li><a href="#categories">Categorias</a></li>
+                        <li><a href="#services">Serviços</a></li>
+                        <li><a href="#about">Sobre Nós</a></li>
+                        <li><a href="#contact">Contato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Categorias Populares</h4>
+                    <ul class="footer-categories">
+                        <li><a href="#">Encanamento</a></li>
+                        <li><a href="#">Elétrica</a></li>
+                        <li><a href="#">Limpeza</a></li>
+                        <li><a href="#">Pintura</a></li>
+                        <li><a href="#">Jardinagem</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-heading">Inscreva-se na Newsletter</h4>
+                    <p class="footer-newsletter-text">Receba ofertas exclusivas e novidades diretamente no seu email.</p>
+                    <div class="footer-newsletter-form">
+                        <input type="email" placeholder="Seu email" class="footer-newsletter-input">
+                        <button class="footer-newsletter-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 ServLink. Todos os direitos reservados.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Termos de Uso</a>
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top"><i class="fas fa-arrow-up"></i></button>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Se usuário já estiver logado, redirecionar para dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            const authToken = localStorage.getItem('servlink_token');
+            if (authToken) {
+                const user = JSON.parse(localStorage.getItem('servlink_user') || 'null');
+                if (user) {
+                    // Redirecionar baseado no tipo de usuário
+                    if (user.user_type === 'profissional') {
+                        window.location.href = 'dashboard-prestador.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html> 

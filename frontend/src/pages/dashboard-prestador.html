@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Prestador | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard-prestador.html" id="dashboard-link">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html" id="appointments-link">Agendamentos</a>
+                <a href="mensagens.html" id="messages-link">Mensagens</a>
+            </nav>
+            <div class="navbar-actions">
+                <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+                <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+                <button class="mobile-menu-btn" id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html">Início</a>
+            <a href="dashboard-prestador.html" id="dashboard-link-mobile">Dashboard</a>
+            <a href="servicos.html">Serviços</a>
+            <a href="agendamentos.html" id="appointments-link-mobile">Agendamentos</a>
+            <a href="mensagens.html" id="messages-link-mobile">Mensagens</a>
+            <div class="mobile-menu-actions">
+                <a href="auth.html" class="btn btn-blue btn-block" id="btn-entrar-mobile">Entrar</a>
+                <button class="btn" id="dark-mode-toggle-mobile" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+                <button class="btn" id="logout-btn-mobile" onclick="logout()" style="display: none;">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-main" style="margin-top: 100px; padding: 2rem 0;">
+        <div class="container">
+            <div class="dashboard-header" style="margin-bottom: 2.5rem; text-align: center; padding: 2.5rem; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 16px; color: white; box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);">
+                <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: white;">Dashboard Prestador</h1>
+                <p style="font-size: 1.125rem; color: rgba(255, 255, 255, 0.9); margin: 0;">Gerencie seus serviços e agendamentos de forma profissional</p>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+                <div class="stat-card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: none; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2); padding: 2rem; border-radius: 16px; transition: all 0.3s;">
+                    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.2); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                        <i class="fas fa-tools" style="color: #2563eb; font-size: 2rem;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-services" style="font-size: 3rem; font-weight: 700; color: #1e40af; margin: 0 0 0.5rem 0;">0</h3>
+                        <p style="color: #1e3a8a; font-weight: 600; font-size: 1rem; margin: 0;">Meus Serviços</p>
+                    </div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: none; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); padding: 2rem; border-radius: 16px; transition: all 0.3s;">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                        <i class="fas fa-calendar-check" style="color: #d97706; font-size: 2rem;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-appointments" style="font-size: 3rem; font-weight: 700; color: #92400e; margin: 0 0 0.5rem 0;">0</h3>
+                        <p style="color: #78350f; font-weight: 600; font-size: 1rem; margin: 0;">Agendamentos</p>
+                    </div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: none; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); padding: 2rem; border-radius: 16px; transition: all 0.3s;">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                        <i class="fas fa-star" style="color: #d97706; font-size: 2rem;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="avg-rating" style="font-size: 3rem; font-weight: 700; color: #92400e; margin: 0 0 0.5rem 0;">0.0</h3>
+                        <p style="color: #78350f; font-weight: 600; font-size: 1rem; margin: 0;">Avaliação Média</p>
+                    </div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border: none; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); padding: 2rem; border-radius: 16px; transition: all 0.3s;">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                        <i class="fas fa-dollar-sign" style="color: #059669; font-size: 2rem;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-earnings" style="font-size: 2.5rem; font-weight: 700; color: #065f46; margin: 0 0 0.5rem 0;">R$ 0</h3>
+                        <p style="color: #047857; font-weight: 600; font-size: 1rem; margin: 0;">Faturamento</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ações Rápidas -->
+            <div class="dashboard-actions" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 2.5rem;">
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-color); display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-bolt" style="color: var(--blue);"></i>
+                    Ações Rápidas
+                </h2>
+                <div class="action-buttons" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <a href="cadastrar-servico.html" class="btn btn-blue" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1.25rem; border-radius: 12px; font-weight: 600; transition: all 0.3s; text-decoration: none; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+                        <i class="fas fa-plus" style="font-size: 1.25rem;"></i>
+                        Cadastrar Serviço
+                    </a>
+                    <a href="agendamentos.html" class="btn btn-green" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1.25rem; border-radius: 12px; font-weight: 600; transition: all 0.3s; text-decoration: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                        <i class="fas fa-calendar" style="font-size: 1.25rem;"></i>
+                        Ver Agendamentos
+                    </a>
+                    <a href="mensagens.html" class="btn btn-yellow" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1.25rem; border-radius: 12px; font-weight: 600; transition: all 0.3s; text-decoration: none; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); background: #fbbf24; color: white;">
+                        <i class="fas fa-comments" style="font-size: 1.25rem;"></i>
+                        Mensagens
+                    </a>
+                    <a href="avaliacoes.html" class="btn btn-purple" style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 1.25rem; border-radius: 12px; font-weight: 600; transition: all 0.3s; text-decoration: none; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); background: #8b5cf6; color: white;">
+                        <i class="fas fa-star" style="font-size: 1.25rem;"></i>
+                        Avaliações
+                    </a>
+                </div>
+            </div>
+
+            <!-- Meus Serviços -->
+            <div class="dashboard-section" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 2.5rem;">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-tools" style="color: var(--blue);"></i>
+                        Meus Serviços
+                    </h2>
+                    <a href="cadastrar-servico.html" class="btn btn-outline-blue" style="padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-plus"></i>
+                        Novo Serviço
+                    </a>
+                </div>
+                <div id="my-services-list" class="services-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                        Carregando seus serviços...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agendamentos Recentes -->
+            <div class="dashboard-section" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-calendar-check" style="color: var(--blue);"></i>
+                        Agendamentos Recentes
+                    </h2>
+                    <a href="agendamentos.html" class="btn btn-outline-blue" style="padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        Ver Todos
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div id="recent-appointments" class="appointments-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                    <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                        Carregando agendamentos...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Verificar se usuário está logado e é profissional
+        document.addEventListener('DOMContentLoaded', async function() {
+            const token = localStorage.getItem('servlink_token');
+            const user = JSON.parse(localStorage.getItem('servlink_user') || 'null');
+            
+            if (!token || !user) {
+                alert('Você precisa estar logado para acessar esta página.');
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            if (user.user_type !== 'profissional') {
+                alert('Esta página é apenas para profissionais.');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+            
+            // Carregar dados do dashboard
+            await loadDashboardData(user);
+        });
+
+        async function loadDashboardData(user) {
+            try {
+                // Carregar serviços do usuário
+                const services = await getUserServices(user.id);
+                renderMyServices(services);
+                updateStats(services);
+                
+                // Carregar agendamentos
+                const appointments = await getAppointments();
+                renderRecentAppointments(appointments.slice(0, 5));
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        function renderMyServices(services) {
+            const container = document.getElementById('my-services-list');
+            
+            if (services.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-tools"></i>
+                        <h3>Nenhum serviço cadastrado</h3>
+                        <p>Comece cadastrando seu primeiro serviço!</p>
+                        <a href="cadastrar-servico.html" class="btn btn-blue">Cadastrar Serviço</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = services.map(service => `
+                <div class="service-card my-service-card">
+                    <div class="service-header">
+                        <h3>${service.title}</h3>
+                        <span class="service-status status-${service.status}">${getStatusText(service.status)}</span>
+                    </div>
+                    <div class="service-details">
+                        <p><strong>Categoria:</strong> ${service.category_name || service.category}</p>
+                        <p><strong>Preço:</strong> R$ ${formatPriceValue(service.price)}/${getPriceTypeLabel(service.price_type)}</p>
+                        <p><strong>Localização:</strong> ${service.location}</p>
+                        <p><strong>Avaliação:</strong> ${service.avg_rating || 0} ⭐ (${service.review_count || 0} avaliações)</p>
+                    </div>
+                    <div class="service-actions">
+                        <button onclick="editService(${service.id})" class="btn btn-outline">Editar</button>
+                        <button onclick="handleDeleteService(${service.id})" class="btn btn-red">Excluir</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecentAppointments(appointments) {
+            const container = document.getElementById('recent-appointments');
+            
+            if (appointments.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-calendar"></i>
+                        <h3>Nenhum agendamento</h3>
+                        <p>Você ainda não tem agendamentos.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = appointments.map(appointment => `
+                <div class="appointment-card">
+                    <div class="appointment-header">
+                        <h4>${appointment.service_title}</h4>
+                        <span class="appointment-status status-${appointment.status}">${getStatusText(appointment.status)}</span>
+                    </div>
+                    <div class="appointment-details">
+                        <p><strong>Data:</strong> ${formatDate(appointment.date)}</p>
+                        <p><strong>Horário:</strong> ${appointment.time}</p>
+                        <p><strong>Cliente:</strong> ${appointment.client_name}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats(services) {
+            document.getElementById('total-services').textContent = services.length;
+            
+            const totalRating = services.reduce((sum, service) => sum + (service.avg_rating || 0), 0);
+            const avgRating = services.length > 0 ? (totalRating / services.length).toFixed(1) : '0.0';
+            document.getElementById('avg-rating').textContent = avgRating;
+            
+            // Calcular faturamento baseado nos serviços
+            const totalEarnings = services.reduce((sum, service) => sum + (service.price || 0), 0);
+            document.getElementById('total-earnings').textContent = `R$ ${totalEarnings.toFixed(2)}`;
+        }
+
+        async function handleDeleteService(serviceId) {
+            if (confirm('Tem certeza que deseja excluir este serviço?')) {
+                try {
+                    await deleteService(serviceId);
+                    location.reload();
+                } catch (error) {
+                    alert('Erro ao excluir serviço: ' + error.message);
+                }
+            }
+        }
+
+        async function editService(serviceId) {
+            try {
+                // Converter para número se necessário
+                const id = typeof serviceId === 'string' ? parseInt(serviceId, 10) : serviceId;
+                
+                const service = await getServiceById(id);
+                if (!service) {
+                    showErrorMessage('Serviço não encontrado');
+                    return;
+                }
+
+                // Escapar valores para evitar problemas com HTML
+                const escapeHtml = (text) => {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                };
+
+                // Criar modal de edição
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 2rem;';
+                
+                const modalContent = document.createElement('div');
+                modalContent.className = 'modal-content';
+                modalContent.style.cssText = 'background: var(--card-bg); border-radius: 16px; padding: 2.5rem; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);';
+                
+                modalContent.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--text-color); margin: 0;">Editar Serviço</h2>
+                        <button id="close-edit-modal" style="background: none; border: none; font-size: 1.5rem; color: var(--text-color); cursor: pointer; padding: 0.5rem; line-height: 1;">&times;</button>
+                    </div>
+                    <form id="edit-service-form">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Título</label>
+                            <input type="text" id="edit-title" value="${escapeHtml(service.title || '')}" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Descrição</label>
+                            <textarea id="edit-description" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem; min-height: 120px; resize: vertical;">${escapeHtml(service.description || '')}</textarea>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Preço</label>
+                            <input type="number" id="edit-price" value="${service.price || 0}" step="0.01" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Tipo de Preço</label>
+                            <select id="edit-price-type" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                                <option value="hour" ${service.price_type === 'hour' ? 'selected' : ''}>Por hora</option>
+                                <option value="day" ${service.price_type === 'day' ? 'selected' : ''}>Por dia</option>
+                                <option value="service" ${service.price_type === 'service' ? 'selected' : ''}>Por serviço</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Categoria</label>
+                            <select id="edit-category" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;"></select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color);">Localização</label>
+                            <input type="text" id="edit-location" value="${escapeHtml(service.location || '')}" required style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; font-size: 1rem;">
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                            <button type="submit" class="btn btn-blue" style="flex: 1; padding: 0.875rem; font-size: 1rem; font-weight: 600;">Salvar Alterações</button>
+                            <button type="button" id="cancel-edit-modal" class="btn btn-outline" style="flex: 1; padding: 0.875rem; font-size: 1rem;">Cancelar</button>
+                        </div>
+                    </form>
+                `;
+                
+                modal.appendChild(modalContent);
+                document.body.appendChild(modal);
+
+                // Preencher categoria
+                const categorySelect = document.getElementById('edit-category');
+                await populateCategorySelect(categorySelect, { includePlaceholder: true, placeholderLabel: 'Selecione uma categoria' });
+                if (service.category_id) {
+                    categorySelect.value = service.category_id;
+                }
+
+                // Fechar modal
+                const closeModal = () => modal.remove();
+                document.getElementById('close-edit-modal').addEventListener('click', closeModal);
+                document.getElementById('cancel-edit-modal').addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+
+                // Submeter formulário
+                document.getElementById('edit-service-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    try {
+                        const selectedCategoryOption = categorySelect.options[categorySelect.selectedIndex];
+                        if (!selectedCategoryOption || !selectedCategoryOption.value) {
+                            showErrorMessage('Por favor, selecione uma categoria');
+                            return;
+                        }
+                        
+                        const serviceData = {
+                            title: document.getElementById('edit-title').value.trim(),
+                            description: document.getElementById('edit-description').value.trim(),
+                            price: parseFloat(document.getElementById('edit-price').value) || 0,
+                            price_type: document.getElementById('edit-price-type').value,
+                            location: document.getElementById('edit-location').value.trim(),
+                            category_id: parseInt(selectedCategoryOption.value),
+                            category: selectedCategoryOption.dataset.slug || '',
+                            category_name: selectedCategoryOption.textContent
+                        };
+                        
+                        if (!serviceData.title || !serviceData.description || !serviceData.location) {
+                            showErrorMessage('Por favor, preencha todos os campos obrigatórios');
+                            return;
+                        }
+                        
+                        await updateService(id, serviceData);
+                        modal.remove();
+                        showSuccessMessage('Serviço atualizado com sucesso!');
+                        // Recarregar dados sem recarregar a página inteira
+                        const user = JSON.parse(localStorage.getItem('servlink_user') || 'null');
+                        if (user) {
+                            await loadDashboardData(user);
+                        }
+                    } catch (error) {
+                        console.error('Erro ao atualizar serviço:', error);
+                        showErrorMessage('Erro ao atualizar serviço: ' + (error.message || 'Erro desconhecido'));
+                    }
+                });
+            } catch (error) {
+                console.error('Erro ao carregar serviço:', error);
+                showErrorMessage('Erro ao carregar serviço: ' + (error.message || 'Erro desconhecido'));
+            }
+        }
+        
+        // Tornar função global
+        window.editService = editService;
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>

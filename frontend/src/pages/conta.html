@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta | ServLink</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/png">
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/conta.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container navbar">
+            <div class="navbar-brand">
+                <i class="fas fa-hands-helping"></i>
+                <h1>ServLink</h1>
+            </div>
+            <nav class="navbar-links">
+                <a href="index.html" data-hide-when="authenticated">Início</a>
+                <a href="dashboard.html" id="dashboard-link">Dashboard</a>
+                <a href="servicos.html">Serviços</a>
+                <a href="agendamentos.html" id="appointments-link">Agendamentos</a>
+                <a href="mensagens.html" id="messages-link">Mensagens</a>
+                <!-- <a href="conta.html" id="account-link">Conta</a> -->
+            </nav>
+            <div class="navbar-actions">
+                <a href="auth.html" class="btn btn-blue" id="btn-entrar-desktop">Entrar</a>
+                <a href="conta.html" class="btn btn-primary" id="account-btn-desktop" style="display: none;">Conta</a>
+                <button class="mobile-menu-btn" id="mobile-menu-button"><i class="fas fa-bars"></i></button>
+                <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+        </div>
+        </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html">Início</a>
+            <a href="dashboard.html" id="dashboard-link-mobile">Dashboard</a>
+            <a href="servicos.html">Serviços</a>
+            <a href="agendamentos.html" id="appointments-link-mobile">Agendamentos</a>
+            <a href="mensagens.html" id="messages-link-mobile">Mensagens</a>
+            <a href="conta.html" id="account-link-mobile">Conta</a>
+            <div class="mobile-menu-actions">
+                <a href="auth.html" class="btn btn-blue btn-block" id="btn-entrar-mobile">Entrar</a>
+                <button class="btn" id="dark-mode-toggle-mobile" title="Alternar modo escuro"><i class="fas fa-moon"></i></button>
+                <button class="btn" id="logout-btn-mobile" onclick="confirmLogout()" style="display: none;">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="account-main-content">
+        <div class="container">
+            <div class="account-header">
+                <div class="account-avatar">
+                    <img src="" alt="Avatar" id="user-avatar">
+                    <button class="avatar-edit-btn" onclick="changeAvatar()">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                <div class="account-info">
+                    <h1 id="user-name-display">Nome do Usuário</h1>
+                    <p id="user-email-display">email@example.com</p>
+                    <span class="user-type-badge" id="user-type-display">Cliente</span>
+                </div>
+            </div>
+
+            <!-- Informações Pessoais -->
+            <div class="account-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-user"></i>
+                        <h3>Informações Pessoais</h3>
+                    </div>
+                    <button class="edit-toggle-btn" onclick="toggleEdit('profile')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+                <div class="card-content">
+                    <form id="profile-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="profile-name">Nome Completo</label>
+                                <input type="text" id="profile-name" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-email">Email</label>
+                                <input type="email" id="profile-email" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-phone">Telefone</label>
+                                <input type="tel" id="profile-phone" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-address">Endereço</label>
+                                <input type="text" id="profile-address" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-city">Cidade</label>
+                                <input type="text" id="profile-city" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-state">Estado</label>
+                                <input type="text" id="profile-state" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar Informações
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Alterar Senha -->
+            <div class="account-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-lock"></i>
+                        <h3>Segurança</h3>
+                    </div>
+                    <span class="security-badge">
+                        <i class="fas fa-shield-alt"></i> Protegido
+                    </span>
+                </div>
+                <div class="card-content">
+                    <form id="password-form">
+                        <div class="password-section">
+                            <div class="form-group">
+                                <label for="current-password">Senha Atual</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="current-password" class="form-input" required>
+                                    <button type="button" class="password-toggle" id="toggle-current-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">Nova Senha</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="new-password" class="form-input" required>
+                                    <button type="button" class="password-toggle" id="toggle-new-password">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength" id="password-strength">
+                                    <div class="strength-bar">
+                                        <div class="strength-fill"></div>
+                                    </div>
+                                    <span class="strength-text">Digite uma senha forte</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirmar Nova Senha</label>
+                                <input type="password" id="confirm-password" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-key"></i> Alterar Senha
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Configurações da Conta -->
+            <div class="account-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-cog"></i>
+                        <h3>Configurações</h3>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="settings-grid">
+                        <div class="setting-card">
+                            <div class="setting-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h4>Notificações por Email</h4>
+                                <p>Receber notificações sobre agendamentos e mensagens</p>
+                            </div>
+                            <label class="modern-switch">
+                                <input type="checkbox" id="email-notifications" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-card">
+                            <div class="setting-icon">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h4>Modo Escuro</h4>
+                                <p>Usar tema escuro na interface</p>
+                            </div>
+                            <label class="modern-switch">
+                                <input type="checkbox" id="dark-mode-setting">
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-card">
+                            <div class="setting-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h4>Perfil Público</h4>
+                                <p>Permitir que outros usuários vejam seu perfil</p>
+                            </div>
+                            <label class="modern-switch">
+                                <input type="checkbox" id="public-profile" checked>
+                                <span class="switch-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estatísticas da Conta -->
+            <div class="account-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Estatísticas</h3>
+                    </div>
+                    <button class="refresh-btn" onclick="refreshStats()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon appointments">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-appointments">0</h3>
+                                <p>Agendamentos</p>
+                                <span class="stat-change positive">+12%</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon rating">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="avg-rating">0.0</h3>
+                                <p>Avaliação Média</p>
+                                <span class="stat-change positive">+0.2</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon messages">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-messages">0</h3>
+                                <p>Mensagens</p>
+                                <span class="stat-change positive">+5</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon services">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-services">0</h3>
+                                <p>Serviços</p>
+                                <span class="stat-change neutral">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ações da Conta -->
+            <div class="account-card danger-zone">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Ações da Conta</h3>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="actions-grid">
+                        <div class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>Exportar Dados</h4>
+                                <p>Baixar todos os seus dados em formato JSON</p>
+                            </div>
+                            <button class="btn btn-warning" onclick="exportData()">
+                                <i class="fas fa-download"></i> Exportar
+                            </button>
+                        </div>
+                        <div class="action-card danger">
+                            <div class="action-icon">
+                                <i class="fas fa-trash"></i>
+                            </div>
+                            <div class="action-content">
+                                <h4>Excluir Conta</h4>
+                                <p>Remover permanentemente sua conta e todos os dados</p>
+                            </div>
+                            <button class="btn btn-danger" onclick="deleteAccount()">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logout -->
+            <div class="account-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <h3>Sair da Conta</h3>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="logout-section">
+                        <div class="logout-info">
+                            <h4>Deseja sair da sua conta?</h4>
+                            <p>Você será redirecionado para a página inicial e precisará fazer login novamente para acessar suas informações.</p>
+                        </div>
+                        <div class="logout-actions">
+                            <button class="btn btn-secondary" onclick="window.history.back()">
+                                <i class="fas fa-arrow-left"></i> Voltar
+                            </button>
+                            <button class="btn btn-danger" onclick="confirmLogout()">
+                                <i class="fas fa-sign-out-alt"></i> Sair da Conta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+        </div>
+    </main>
+
+    <script src="../js/script.js"></script>
+    <script>
+        // Verificar se usuário está logado
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('servlink_token');
+            const user = JSON.parse(localStorage.getItem('servlink_user') || 'null');
+            
+            if (!token || !user) {
+                alert('Você precisa estar logado para acessar esta página.');
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            // Carregar dados do usuário
+            loadUserData(user);
+            loadAccountStats(); // Agora é async, mas não precisa await aqui
+            loadSettings();
+        });
+
+        // Carregar dados do usuário
+        function loadUserData(user) {
+            document.getElementById('profile-name').value = user.name || '';
+            document.getElementById('profile-email').value = user.email || '';
+            document.getElementById('profile-phone').value = user.phone || '';
+            document.getElementById('profile-address').value = user.address || '';
+            document.getElementById('profile-city').value = user.city || '';
+            document.getElementById('profile-state').value = user.state || '';
+            
+            // Atualizar header
+            document.getElementById('user-name-display').textContent = user.name || 'Usuário';
+            document.getElementById('user-email-display').textContent = user.email || '';
+            document.getElementById('user-type-display').textContent = user.user_type === 'profissional' ? 'Prestador' : 'Cliente';
+            
+            // Carregar foto de perfil
+            const profileImage = getUserProfileImage(user.id);
+            document.getElementById('user-avatar').src = profileImage;
+        }
+
+        // Carregar estatísticas da conta
+        async function loadAccountStats() {
+            try {
+                const user = JSON.parse(localStorage.getItem('servlink_user') || 'null');
+                if (!user) return;
+                
+                // Buscar estatísticas reais do usuário
+                const userStats = await getUserStats(user.id);
+                
+                // Atualizar agendamentos
+                document.getElementById('total-appointments').textContent = userStats.total_appointments || 0;
+                
+                // Atualizar avaliação média (apenas se houver avaliações)
+                document.getElementById('avg-rating').textContent = userStats.avg_rating ? userStats.avg_rating.toFixed(1) : '0.0';
+                
+                // Buscar mensagens do usuário
+                const messages = JSON.parse(localStorage.getItem('servlink_messages') || '[]');
+                const userMessages = messages.filter(m => 
+                    m.sender_id === user.id || m.receiver_id === user.id
+                );
+                document.getElementById('total-messages').textContent = userMessages.length || 0;
+                
+                // Atualizar serviços (apenas para profissionais)
+                if (user.user_type === 'profissional') {
+                    document.getElementById('total-services').textContent = userStats.total_services || 0;
+                } else {
+                    // Para clientes, mostrar 0 ou esconder
+                    document.getElementById('total-services').textContent = '0';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+                // Em caso de erro, mostrar zeros
+                document.getElementById('total-appointments').textContent = '0';
+                document.getElementById('avg-rating').textContent = '0.0';
+                document.getElementById('total-messages').textContent = '0';
+                document.getElementById('total-services').textContent = '0';
+            }
+        }
+
+        // Carregar configurações
+        function loadSettings() {
+            const darkMode = localStorage.getItem('servlink-dark') === '1';
+            document.getElementById('dark-mode-setting').checked = darkMode;
+        }
+
+        // Formulário de perfil
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const profileData = {
+                name: document.getElementById('profile-name').value,
+                email: document.getElementById('profile-email').value,
+                phone: document.getElementById('profile-phone').value,
+                address: document.getElementById('profile-address').value,
+                city: document.getElementById('profile-city').value,
+                state: document.getElementById('profile-state').value
+            };
+            
+            try {
+                await updateUserProfile(profileData);
+                showSuccessMessage('Perfil atualizado com sucesso!');
+            } catch (error) {
+                showErrorMessage('Erro ao atualizar perfil: ' + error.message);
+            }
+        });
+
+        // Formulário de senha
+        document.getElementById('password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword !== confirmPassword) {
+                showErrorMessage('As senhas não coincidem');
+                return;
+            }
+            
+            try {
+                await changePassword(currentPassword, newPassword);
+                showSuccessMessage('Senha alterada com sucesso!');
+                document.getElementById('password-form').reset();
+            } catch (error) {
+                showErrorMessage('Erro ao alterar senha: ' + error.message);
+            }
+        });
+
+        // Configurações
+        document.getElementById('dark-mode-setting').addEventListener('change', function() {
+            const isDark = this.checked;
+            localStorage.setItem('servlink-dark', isDark ? '1' : '0');
+            setDarkMode(isDark);
+        });
+
+        // Toggle de senha
+        document.getElementById('toggle-current-password').addEventListener('click', function() {
+            togglePasswordVisibility('current-password', this);
+        });
+
+        document.getElementById('toggle-new-password').addEventListener('click', function() {
+            togglePasswordVisibility('new-password', this);
+        });
+
+        function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Exportar dados
+        function exportData() {
+            const user = JSON.parse(localStorage.getItem('servlink_user') || 'null');
+            const data = {
+                user: user,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'servlink-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showSuccessMessage('Dados exportados com sucesso!');
+        }
+
+        // Excluir conta
+        function deleteAccount() {
+            if (confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.')) {
+                const confirmation = prompt('Digite "CONFIRMAR" para excluir definitivamente:');
+                if (confirmation === 'CONFIRMAR') {
+                    try {
+                        // Remover usuário da lista de usuários
+                        const users = JSON.parse(localStorage.getItem('servlink_users') || '[]');
+                        const currentUser = JSON.parse(localStorage.getItem('servlink_user') || 'null');
+                        
+                        if (currentUser) {
+                            const updatedUsers = users.filter(user => user.id !== currentUser.id);
+                            localStorage.setItem('servlink_users', JSON.stringify(updatedUsers));
+                            
+                            // Remover dados relacionados ao usuário
+                            const appointments = JSON.parse(localStorage.getItem('servlink_appointments') || '[]');
+                            const userAppointments = appointments.filter(apt => 
+                                apt.client_id !== currentUser.id && apt.provider_id !== currentUser.id
+                            );
+                            localStorage.setItem('servlink_appointments', JSON.stringify(userAppointments));
+                            
+                            const messages = JSON.parse(localStorage.getItem('servlink_messages') || '[]');
+                            const userMessages = messages.filter(msg => 
+                                msg.sender_id !== currentUser.id && msg.receiver_id !== currentUser.id
+                            );
+                            localStorage.setItem('servlink_messages', JSON.stringify(userMessages));
+                            
+                            const services = JSON.parse(localStorage.getItem('servlink_services') || '[]');
+                            const userServices = services.filter(svc => svc.provider_id !== currentUser.id);
+                            localStorage.setItem('servlink_services', JSON.stringify(userServices));
+                        }
+                        
+                        // Fazer logout
+                        logout();
+                        showSuccessMessage('Conta excluída com sucesso!');
+                        
+                    } catch (error) {
+                        console.error('Erro ao excluir conta:', error);
+                        showErrorMessage('Erro ao excluir conta. Tente novamente.');
+                    }
+                } else {
+                    showErrorMessage('Confirmação incorreta. Conta não foi excluída.');
+                }
+            }
+        }
+
+        // Alterar avatar
+        async function changeAvatar() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validar tamanho do arquivo (máximo 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        showErrorMessage('A imagem deve ter no máximo 5MB');
+                        return;
+                    }
+                    
+                    // Validar tipo de arquivo
+                    if (!file.type.startsWith('image/')) {
+                        showErrorMessage('Por favor, selecione uma imagem válida');
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        try {
+                            // Salvar foto permanentemente (já atualiza tudo automaticamente)
+                            await updateUserProfileImage(e.target.result);
+                            
+                            // Recarregar estatísticas para atualizar dados na tela
+                            loadAccountStats();
+                        } catch (error) {
+                            console.error('Erro ao atualizar foto:', error);
+                            showErrorMessage('Erro ao atualizar foto de perfil');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+
+        // Toggle edição
+        function toggleEdit(section) {
+            const form = document.getElementById(section + '-form');
+            const inputs = form.querySelectorAll('input, textarea, select');
+            const isDisabled = inputs[0].disabled;
+            
+            inputs.forEach(input => {
+                input.disabled = !isDisabled;
+            });
+            
+            const btn = event.target.closest('button');
+            btn.innerHTML = isDisabled ? '<i class="fas fa-save"></i>' : '<i class="fas fa-edit"></i>';
+        }
+
+        // Atualizar força da senha
+        document.getElementById('new-password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.querySelector('.strength-fill');
+            const strengthText = document.querySelector('.strength-text');
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            strengthBar.className = 'strength-fill';
+            if (strength < 2) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'Senha fraca';
+            } else if (strength < 3) {
+                strengthBar.classList.add('fair');
+                strengthText.textContent = 'Senha razoável';
+            } else if (strength < 4) {
+                strengthBar.classList.add('good');
+                strengthText.textContent = 'Senha boa';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'Senha forte';
+            }
+        });
+
+        // Atualizar estatísticas
+        function refreshStats() {
+            const btn = event.target.closest('button');
+            btn.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                btn.style.transform = '';
+                loadAccountStats();
+                showSuccessMessage('Estatísticas atualizadas!');
+            }, 500);
+        }
+
+        // Função para confirmar logout
+        function confirmLogout() {
+            if (confirm('Tem certeza que deseja sair da sua conta?')) {
+                logout();
+            }
+        }
+    </script>
+    
+    <!-- VLibras - Acessibilidade em Libras -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+</body>
+</html>
