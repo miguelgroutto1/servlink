@@ -1015,7 +1015,24 @@ if (togglePassword) {
 
 if (toggleSignupPassword) {
     toggleSignupPassword.addEventListener('click', function() {
-        const passwordInput = document.getElementById('signup-password');
+        const passwordInput = document.getElementById('register-password');
+        const eyeIcon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    });
+}
+
+// Toggle para confirmar senha no cadastro
+const toggleSignupConfirmPassword = document.getElementById('toggle-signup-confirm-password');
+if (toggleSignupConfirmPassword) {
+    toggleSignupConfirmPassword.addEventListener('click', function() {
+        const passwordInput = document.getElementById('register-confirm-password');
         const eyeIcon = this.querySelector('i');
         
         if (passwordInput.type === 'password') {

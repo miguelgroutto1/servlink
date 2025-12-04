@@ -188,11 +188,13 @@
                 // Carregar serviços do usuário
                 const services = await getUserServices(user.id);
                 renderMyServices(services);
-                updateStats(services);
                 
                 // Carregar agendamentos
                 const appointments = await getAppointments();
                 renderRecentAppointments(appointments.slice(0, 5));
+                
+                // Atualizar estatísticas com serviços e agendamentos
+                updateStats(services, appointments, user.id);
                 
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
@@ -263,15 +265,31 @@
             `).join('');
         }
 
-        function updateStats(services) {
+        async function updateStats(services, appointments, userId) {
             document.getElementById('total-services').textContent = services.length;
             
             const totalRating = services.reduce((sum, service) => sum + (service.avg_rating || 0), 0);
             const avgRating = services.length > 0 ? (totalRating / services.length).toFixed(1) : '0.0';
             document.getElementById('avg-rating').textContent = avgRating;
             
-            // Calcular faturamento baseado nos serviços
-            const totalEarnings = services.reduce((sum, service) => sum + (service.price || 0), 0);
+            // Calcular faturamento baseado apenas nos agendamentos concluídos
+            // Filtrar agendamentos do prestador que foram concluídos
+            const completedAppointments = appointments.filter(apt => 
+                apt.provider_id == userId && apt.status === 'completed'
+            );
+            
+            // Buscar serviços para obter os preços
+            const allServices = JSON.parse(localStorage.getItem('servlink_services') || '[]');
+            
+            // Calcular faturamento somando apenas os preços dos serviços dos agendamentos concluídos
+            let totalEarnings = 0;
+            completedAppointments.forEach(appointment => {
+                const service = allServices.find(s => s.id == appointment.service_id);
+                if (service && service.price) {
+                    totalEarnings += service.price;
+                }
+            });
+            
             document.getElementById('total-earnings').textContent = `R$ ${totalEarnings.toFixed(2)}`;
         }
 
