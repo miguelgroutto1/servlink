@@ -123,45 +123,17 @@
                 </div>
             </div>
 
-            <!-- Formulário de Novo Agendamento (apenas para clientes) -->
-            <div id="new-appointment-section" class="form-section" style="display: none; background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-top: 2rem;">
-                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
-                        <i class="fas fa-plus-circle" style="color: var(--blue);"></i>
-                        Novo Agendamento
-                    </h3>
-                </div>
-                <form id="new-appointment-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="service-select">Serviço</label>
-                            <select id="service-select" required>
-                                <option value="">Selecione um serviço...</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="provider-select">Profissional</label>
-                            <select id="provider-select" required disabled>
-                                <option value="">Selecione um serviço primeiro...</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="appointment-date">Data</label>
-                            <input type="date" id="appointment-date" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="appointment-time">Horário</label>
-                            <input type="time" id="appointment-time" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="appointment-notes">Observações</label>
-                        <textarea id="appointment-notes" placeholder="Descreva detalhes específicos do serviço..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-blue">Criar Agendamento</button>
-                </form>
+            <!-- Botão para criar novo agendamento (redireciona para serviços) -->
+            <div class="form-section" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-top: 2rem; text-align: center;">
+                <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0 0 1rem 0; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                    <i class="fas fa-calendar-plus" style="color: var(--blue);"></i>
+                    Quer agendar um novo serviço?
+                </h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Explore nossas opções de cadastro de serviços disponíveis.</p>
+                <a href="servicos.html" class="btn btn-blue" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-search"></i>
+                    Ver Serviços Disponíveis
+                </a>
             </div>
         </div>
     </main>
@@ -224,56 +196,6 @@
             if (totalEl) totalEl.textContent = total;
         }
 
-        let servicesData = []; // Armazenar dados dos serviços
-        
-        // Carregar serviços para o formulário (apenas para clientes)
-        async function loadServicesForForm() {
-            if (currentUser && currentUser.user_type === 'cliente') {
-                try {
-                    const services = await searchServices();
-                    servicesData = services; // Armazenar para uso posterior
-                    const serviceSelect = document.getElementById('service-select');
-                    const providerSelect = document.getElementById('provider-select');
-                    
-                    serviceSelect.innerHTML = '<option value="">Selecione um serviço...</option>';
-                    providerSelect.innerHTML = '<option value="">Selecione um profissional...</option>';
-                    
-                    // Preencher apenas com o título do serviço
-                    services.forEach(service => {
-                        const option = document.createElement('option');
-                        option.value = service.id;
-                        option.textContent = service.title;
-                        option.dataset.providerId = service.provider_id;
-                        option.dataset.providerName = service.provider_name;
-                        serviceSelect.appendChild(option);
-                    });
-                    
-                    // Quando um serviço for selecionado, preencher o profissional automaticamente
-                    serviceSelect.addEventListener('change', function() {
-                        const selectedOption = this.options[this.selectedIndex];
-                        if (selectedOption.value) {
-                            const providerId = selectedOption.dataset.providerId;
-                            const providerName = selectedOption.dataset.providerName;
-                            
-                            providerSelect.innerHTML = '';
-                            const providerOption = document.createElement('option');
-                            providerOption.value = providerId;
-                            providerOption.textContent = providerName;
-                            providerOption.selected = true;
-                            providerSelect.appendChild(providerOption);
-                            providerSelect.disabled = false;
-                        } else {
-                            providerSelect.innerHTML = '<option value="">Selecione um serviço primeiro...</option>';
-                            providerSelect.disabled = true;
-                        }
-                    });
-                    
-                    document.getElementById('new-appointment-section').style.display = 'block';
-                } catch (error) {
-                    console.error('Erro ao carregar serviços:', error);
-                }
-            }
-        }
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
@@ -285,7 +207,6 @@
 
             // Carregar dados iniciais
             loadAppointments();
-            loadServicesForForm();
 
             // Filtros com estilo melhorado
             document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -315,64 +236,17 @@
                 });
             });
 
-            // Formulário de novo agendamento
-            const appointmentForm = document.getElementById('new-appointment-form');
-            if (appointmentForm) {
-                appointmentForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const serviceId = document.getElementById('service-select').value;
-                    const providerId = document.getElementById('provider-select').value;
-                    const date = document.getElementById('appointment-date').value;
-                    const time = document.getElementById('appointment-time').value;
-                    const notes = document.getElementById('appointment-notes').value;
-                    
-                    if (!serviceId || !date || !time) {
-                        showErrorMessage('Preencha todos os campos obrigatórios');
-                        return;
-                    }
-                    
-                    // Validar data (não permitir datas passadas)
-                    const selectedDate = new Date(date);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    
-                    if (selectedDate < today) {
-                        showErrorMessage('Não é possível agendar para datas passadas');
-                        return;
-                    }
-                    
-                    // Se o providerId não foi selecionado, buscar do serviço selecionado
-                    let finalProviderId = providerId;
-                    if (!finalProviderId) {
-                        const selectedService = servicesData.find(s => s.id == serviceId);
-                        if (selectedService) {
-                            finalProviderId = selectedService.provider_id;
-                        }
-                    }
-                    
-                    try {
-                        const appointmentData = {
-                            service_id: serviceId,
-                            date: date,
-                            time: time,
-                            notes: notes
-                        };
-                        
-                        await createAppointment(appointmentData);
-                        appointmentForm.reset();
-                        loadAppointments(currentFilter);
-                    } catch (error) {
-                        console.error('Erro ao criar agendamento:', error);
-                        showErrorMessage(error.message);
-                    }
-                });
-            }
         });
 
         // Função para abrir chat
         function openChat(appointmentId) {
             window.location.href = `mensagens.html?appointment=${appointmentId}`;
+        }
+
+        // Função para ir para a página de avaliação do serviço
+        function goToReview(serviceId) {
+            if (!serviceId) return;
+            window.location.href = `servico-detalhes.html?id=${serviceId}`;
         }
 
         // Função para atualizar status (global para ser acessível pelos botões)
@@ -400,6 +274,11 @@
                 const container = document.getElementById('appointments-list');
                 if (container) {
                     renderAppointments(filteredAppointments, container);
+                }
+                
+                // Atualizar dashboard do prestador se estiver aberto (atualização imediata)
+                if (typeof updateDashboardData === 'function') {
+                    updateDashboardData();
                 }
                 
                 showSuccessMessage('Status atualizado com sucesso!');

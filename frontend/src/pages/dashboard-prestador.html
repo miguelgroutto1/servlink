@@ -139,7 +139,7 @@
             </div>
 
             <!-- Agendamentos Recentes -->
-            <div class="dashboard-section" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            <!-- <div class="dashboard-section" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
                 <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                     <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
                         <i class="fas fa-calendar-check" style="color: var(--blue);"></i>
@@ -156,7 +156,7 @@
                         Carregando agendamentos...
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </main>
 
@@ -183,7 +183,8 @@
             await loadDashboardData(user);
         });
 
-        async function loadDashboardData(user) {
+        // Tornar função global para atualização em tempo real
+        window.loadDashboardData = async function(user) {
             try {
                 // Carregar serviços do usuário
                 const services = await getUserServices(user.id);
@@ -191,7 +192,20 @@
                 
                 // Carregar agendamentos
                 const appointments = await getAppointments();
-                renderRecentAppointments(appointments.slice(0, 5));
+                
+                // Ordenar agendamentos: concluídos primeiro, depois por data (mais recentes primeiro)
+                const sortedAppointments = appointments.sort((a, b) => {
+                    // Priorizar concluídos
+                    if (a.status === 'completed' && b.status !== 'completed') return -1;
+                    if (a.status !== 'completed' && b.status === 'completed') return 1;
+                    
+                    // Se ambos têm o mesmo status, ordenar por data (mais recentes primeiro)
+                    const dateA = new Date(a.date + ' ' + (a.time || '00:00'));
+                    const dateB = new Date(b.date + ' ' + (b.time || '00:00'));
+                    return dateB - dateA;
+                });
+                
+                renderRecentAppointments(sortedAppointments.slice(0, 5));
                 
                 // Atualizar estatísticas com serviços e agendamentos
                 updateStats(services, appointments, user.id);
@@ -199,7 +213,7 @@
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
             }
-        }
+        };
 
         function renderMyServices(services) {
             const container = document.getElementById('my-services-list');
@@ -268,6 +282,12 @@
         async function updateStats(services, appointments, userId) {
             document.getElementById('total-services').textContent = services.length;
             
+            // Atualizar total de agendamentos (filtrar apenas os do prestador)
+            const providerAppointments = appointments.filter(apt => 
+                apt.provider_id == userId || String(apt.provider_id) === String(userId)
+            );
+            document.getElementById('total-appointments').textContent = providerAppointments.length;
+            
             const totalRating = services.reduce((sum, service) => sum + (service.avg_rating || 0), 0);
             const avgRating = services.length > 0 ? (totalRating / services.length).toFixed(1) : '0.0';
             document.getElementById('avg-rating').textContent = avgRating;
@@ -275,7 +295,7 @@
             // Calcular faturamento baseado apenas nos agendamentos concluídos
             // Filtrar agendamentos do prestador que foram concluídos
             const completedAppointments = appointments.filter(apt => 
-                apt.provider_id == userId && apt.status === 'completed'
+                (apt.provider_id == userId || String(apt.provider_id) === String(userId)) && apt.status === 'completed'
             );
             
             // Buscar serviços para obter os preços

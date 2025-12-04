@@ -233,6 +233,20 @@
         }
 
         function showAppointmentForm() {
+            // Definir data mínima como amanhã quando o formulário for exibido
+            const appointmentDateInput = document.getElementById('appointment-date');
+            if (appointmentDateInput) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                // Formatar como YYYY-MM-DD para o input type="date"
+                const year = tomorrow.getFullYear();
+                const month = String(tomorrow.getMonth() + 1).padStart(2, '0');
+                const day = String(tomorrow.getDate()).padStart(2, '0');
+                const tomorrowStr = `${year}-${month}-${day}`;
+                appointmentDateInput.setAttribute('min', tomorrowStr);
+                appointmentDateInput.value = ''; // Limpar valor anterior
+            }
+            
             document.getElementById('appointment-form').style.display = 'block';
             document.getElementById('appointment-form').scrollIntoView({ behavior: 'smooth' });
         }
@@ -264,10 +278,32 @@
                 appointmentForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     
+                    const dateValue = document.getElementById('appointment-date').value;
+                    const timeValue = document.getElementById('appointment-time').value;
+                    
+                    // Validar data (não permitir hoje ou datas passadas)
+                    if (!dateValue) {
+                        showErrorMessage('Por favor, selecione uma data.');
+                        return;
+                    }
+                    
+                    const selectedDate = new Date(dateValue + 'T00:00:00');
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    // Comparar apenas as datas (sem hora)
+                    const selectedDateOnly = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+                    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                    
+                    if (selectedDateOnly <= todayOnly) {
+                        showErrorMessage('Não é possível agendar para hoje ou datas passadas. Selecione uma data a partir de amanhã.');
+                        return;
+                    }
+                    
                     const appointmentData = {
                         service_id: currentService.id,
-                        date: document.getElementById('appointment-date').value,
-                        time: document.getElementById('appointment-time').value,
+                        date: dateValue,
+                        time: timeValue,
                         notes: document.getElementById('appointment-notes').value
                     };
 
@@ -275,8 +311,10 @@
                         await createAppointment(appointmentData);
                         document.getElementById('appointment-form').style.display = 'none';
                         appointmentForm.reset();
+                        showSuccessMessage('Agendamento criado com sucesso!');
                     } catch (error) {
                         console.error('Erro ao criar agendamento:', error);
+                        showErrorMessage(error.message || 'Erro ao criar agendamento');
                     }
                 });
             }

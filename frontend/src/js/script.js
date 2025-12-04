@@ -1806,6 +1806,21 @@ async function createAppointment(appointmentData) {
     // Simular delay de rede
     await new Promise(resolve => setTimeout(resolve, 300));
     
+    // Validar data (não permitir hoje ou datas passadas)
+    if (appointmentData.date) {
+        const selectedDate = new Date(appointmentData.date + 'T00:00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Comparar apenas as datas (sem hora)
+        const selectedDateOnly = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+        const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        
+        if (selectedDateOnly <= todayOnly) {
+            throw new Error('Não é possível agendar para hoje ou datas passadas. Selecione uma data a partir de amanhã.');
+        }
+    }
+    
     const user = JSON.parse(localStorage.getItem('servlink_user') || 'null');
     if (!user) {
         throw new Error('Usuário não encontrado');
@@ -2324,6 +2339,19 @@ function getAppointmentActions(appointment) {
             </button>
         `);
     }
+
+    // Botão de avaliação - apenas para cliente e quando o agendamento estiver concluído
+    if (appointment.status === 'completed') {
+        const isClient = userId && (appointment.client_id == userId || String(appointment.client_id) === String(userId));
+        
+        if (isClient && appointment.service_id) {
+            actions.push(`
+                <button onclick="goToReview(${appointment.service_id})" class="btn btn-blue btn-outline">
+                    Avaliar Serviço
+                </button>
+            `);
+        }
+    }
     
     actions.push(`
         <button onclick="openChat(${appointment.id})" class="btn btn-outline">
@@ -2540,9 +2568,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 email: document.getElementById('register-email').value,
                 password: password,
                 phone: document.getElementById('register-phone').value,
-                address: document.getElementById('register-address').value,
-                city: document.getElementById('register-city').value,
-                state: document.getElementById('register-state').value,
+                address: '',
+                city: '',
+                state: '',
                 user_type: document.getElementById('register-user-type').value
             };
             
@@ -2665,16 +2693,28 @@ async function loadInitialData() {
         }
     }
 
-    // Carregar estatísticas
+    // Carregar estatísticas (apenas se não for página de agendamentos ou dashboard)
     const statsContainer = document.querySelector('.stats-grid');
     if (statsContainer) {
-        try {
-            const stats = await getStats();
-            if (stats) {
-                renderStats(stats, statsContainer);
+        // Verificar se é página de agendamentos (tem IDs específicos de agendamentos)
+        const isAppointmentsPage = document.getElementById('pending-count') || 
+                                   document.getElementById('completed-count') ||
+                                   window.location.pathname.includes('agendamentos.html');
+        
+        // Verificar se é dashboard do prestador (tem ID total-services)
+        const isProviderDashboard = document.getElementById('total-services') ||
+                                    window.location.pathname.includes('dashboard-prestador.html');
+        
+        // Só renderizar estatísticas do site se não for página de agendamentos ou dashboard do prestador
+        if (!isAppointmentsPage && !isProviderDashboard) {
+            try {
+                const stats = await getStats();
+                if (stats) {
+                    renderStats(stats, statsContainer);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
             }
-        } catch (error) {
-            console.error('Erro ao carregar estatísticas:', error);
         }
     }
 }
@@ -2746,6 +2786,14 @@ async function updateDashboardData() {
             const statsContainer = document.querySelector('.stats-grid');
             if (statsContainer) {
                 updateAppointmentStats(appointments);
+            }
+        }
+        
+        // Atualizar dashboard do prestador se estivermos nessa página
+        if (window.location.pathname.includes('dashboard-prestador.html')) {
+            // Verificar se a função loadDashboardData existe (definida na página)
+            if (typeof window.loadDashboardData === 'function') {
+                await window.loadDashboardData(user);
             }
         }
         

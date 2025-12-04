@@ -90,7 +90,7 @@
                                 <label for="profile-phone">Telefone</label>
                                 <input type="tel" id="profile-phone" class="form-input">
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="profile-address">Endereço</label>
                                 <input type="text" id="profile-address" class="form-input">
                             </div>
@@ -101,7 +101,7 @@
                             <div class="form-group">
                                 <label for="profile-state">Estado</label>
                                 <input type="text" id="profile-state" class="form-input">
-                            </div>
+                            </div> -->
                         </div>
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
@@ -168,7 +168,7 @@
             <!--   <button class="btn" id="dark-mode-toggle" title="Alternar modo escuro"><i class="fas fa-moon"></i></button> -->
 
             <!-- Estatísticas da Conta -->
-            <div class="account-card">
+            <!-- <div class="account-card">
                 <div class="card-header">
                     <div class="card-title">
                         <i class="fas fa-chart-bar"></i>
@@ -222,7 +222,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Ações da Conta -->
             <div class="account-card danger-zone">
@@ -316,9 +316,9 @@
             document.getElementById('profile-name').value = user.name || '';
             document.getElementById('profile-email').value = user.email || '';
             document.getElementById('profile-phone').value = user.phone || '';
-            document.getElementById('profile-address').value = user.address || '';
-            document.getElementById('profile-city').value = user.city || '';
-            document.getElementById('profile-state').value = user.state || '';
+            // document.getElementById('profile-address').value = user.address || '';
+            // document.getElementById('profile-city').value = user.city || '';
+            // document.getElementById('profile-state').value = user.state || '';
             
             // Atualizar header
             document.getElementById('user-name-display').textContent = user.name || 'Usuário';
@@ -383,9 +383,9 @@
                 name: document.getElementById('profile-name').value,
                 email: document.getElementById('profile-email').value,
                 phone: document.getElementById('profile-phone').value,
-                address: document.getElementById('profile-address').value,
-                city: document.getElementById('profile-city').value,
-                state: document.getElementById('profile-state').value
+                address: '',
+                city: '',
+                state: ''
             };
             
             try {

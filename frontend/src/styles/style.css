@@ -363,10 +363,11 @@ body.dark .mobile-menu a:hover {
 
 /* Hero Section */
 .hero-gradient {
-    padding: 4rem 0;
+    padding: 3rem 0;
     background: linear-gradient(135deg, var(--blue) 0%, var(--primary-dark) 100%);
     color: #fff;
-    min-height: 100vh;
+    /* Ocupa a tela inteira desconsiderando a altura do header fixo (68px) */
+    min-height: calc(100vh - 68px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1257,7 +1258,8 @@ body.dark .service-distance {
 }
 .contact-info-item {
     display: flex;
-    align-items: flex-start;
+    /* Centraliza verticalmente o ícone e o texto de contato */
+    align-items: center;
     gap: 1rem;
 }
 .contact-info-item i {
@@ -1854,7 +1856,9 @@ body.dark .form-card {
 }
 
 .terms-text {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--text-secondary);
     font-size: 0.875rem;
     margin-bottom: 1.5rem;

@@ -1,6 +1,6 @@
 /* Estilos específicos para a página de conta */
 .account-main-content {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #6f8aff 0%, #485799 100%);
     min-height: 100vh;
     padding: 5rem 0 2rem 0;
     margin-top: 6px;
@@ -83,7 +83,7 @@
 .user-type-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #6f8aff 0%, #485799 100%);
     color: white;
     border-radius: 20px;
     font-size: 0.8rem;
@@ -551,7 +551,7 @@ input:checked + .switch-slider:before {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #6f8aff 0%, #485799 100%);
     color: white;
 }
 
