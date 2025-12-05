@@ -289,8 +289,6 @@
             </div>
         </div>
     </main>
-        </div>
-    </main>
 
     <script src="../js/script.js"></script>
     <script>
@@ -309,25 +307,35 @@
             loadUserData(user);
             loadAccountStats(); // Agora é async, mas não precisa await aqui
             loadSettings();
+            
+            // Configurar toggles de senha
+            setupPasswordToggles();
         });
 
         // Carregar dados do usuário
         function loadUserData(user) {
-            document.getElementById('profile-name').value = user.name || '';
-            document.getElementById('profile-email').value = user.email || '';
-            document.getElementById('profile-phone').value = user.phone || '';
-            // document.getElementById('profile-address').value = user.address || '';
-            // document.getElementById('profile-city').value = user.city || '';
-            // document.getElementById('profile-state').value = user.state || '';
+            const profileName = document.getElementById('profile-name');
+            const profileEmail = document.getElementById('profile-email');
+            const profilePhone = document.getElementById('profile-phone');
+            const userNameDisplay = document.getElementById('user-name-display');
+            const userEmailDisplay = document.getElementById('user-email-display');
+            const userTypeDisplay = document.getElementById('user-type-display');
+            const userAvatar = document.getElementById('user-avatar');
+            
+            if (profileName) profileName.value = user.name || '';
+            if (profileEmail) profileEmail.value = user.email || '';
+            if (profilePhone) profilePhone.value = user.phone || '';
             
             // Atualizar header
-            document.getElementById('user-name-display').textContent = user.name || 'Usuário';
-            document.getElementById('user-email-display').textContent = user.email || '';
-            document.getElementById('user-type-display').textContent = user.user_type === 'profissional' ? 'Prestador' : 'Cliente';
+            if (userNameDisplay) userNameDisplay.textContent = user.name || 'Usuário';
+            if (userEmailDisplay) userEmailDisplay.textContent = user.email || '';
+            if (userTypeDisplay) userTypeDisplay.textContent = user.user_type === 'profissional' ? 'Prestador' : 'Cliente';
             
             // Carregar foto de perfil
-            const profileImage = getUserProfileImage(user.id);
-            document.getElementById('user-avatar').src = profileImage;
+            if (userAvatar) {
+                const profileImage = getUserProfileImage(user.id);
+                userAvatar.src = profileImage;
+            }
         }
 
         // Carregar estatísticas da conta
@@ -339,40 +347,60 @@
                 // Buscar estatísticas reais do usuário
                 const userStats = await getUserStats(user.id);
                 
-                // Atualizar agendamentos
-                document.getElementById('total-appointments').textContent = userStats.total_appointments || 0;
+                // Atualizar agendamentos (se o elemento existir)
+                const totalAppointmentsEl = document.getElementById('total-appointments');
+                if (totalAppointmentsEl) {
+                    totalAppointmentsEl.textContent = userStats.total_appointments || 0;
+                }
                 
                 // Atualizar avaliação média (apenas se houver avaliações)
-                document.getElementById('avg-rating').textContent = userStats.avg_rating ? userStats.avg_rating.toFixed(1) : '0.0';
+                const avgRatingEl = document.getElementById('avg-rating');
+                if (avgRatingEl) {
+                    avgRatingEl.textContent = userStats.avg_rating ? userStats.avg_rating.toFixed(1) : '0.0';
+                }
                 
                 // Buscar mensagens do usuário
                 const messages = JSON.parse(localStorage.getItem('servlink_messages') || '[]');
                 const userMessages = messages.filter(m => 
                     m.sender_id === user.id || m.receiver_id === user.id
                 );
-                document.getElementById('total-messages').textContent = userMessages.length || 0;
+                const totalMessagesEl = document.getElementById('total-messages');
+                if (totalMessagesEl) {
+                    totalMessagesEl.textContent = userMessages.length || 0;
+                }
                 
                 // Atualizar serviços (apenas para profissionais)
-                if (user.user_type === 'profissional') {
-                    document.getElementById('total-services').textContent = userStats.total_services || 0;
-                } else {
-                    // Para clientes, mostrar 0 ou esconder
-                    document.getElementById('total-services').textContent = '0';
+                const totalServicesEl = document.getElementById('total-services');
+                if (totalServicesEl) {
+                    if (user.user_type === 'profissional') {
+                        totalServicesEl.textContent = userStats.total_services || 0;
+                    } else {
+                        // Para clientes, mostrar 0 ou esconder
+                        totalServicesEl.textContent = '0';
+                    }
                 }
             } catch (error) {
                 console.error('Erro ao carregar estatísticas:', error);
-                // Em caso de erro, mostrar zeros
-                document.getElementById('total-appointments').textContent = '0';
-                document.getElementById('avg-rating').textContent = '0.0';
-                document.getElementById('total-messages').textContent = '0';
-                document.getElementById('total-services').textContent = '0';
+                // Em caso de erro, mostrar zeros apenas se os elementos existirem
+                const totalAppointmentsEl = document.getElementById('total-appointments');
+                const avgRatingEl = document.getElementById('avg-rating');
+                const totalMessagesEl = document.getElementById('total-messages');
+                const totalServicesEl = document.getElementById('total-services');
+                
+                if (totalAppointmentsEl) totalAppointmentsEl.textContent = '0';
+                if (avgRatingEl) avgRatingEl.textContent = '0.0';
+                if (totalMessagesEl) totalMessagesEl.textContent = '0';
+                if (totalServicesEl) totalServicesEl.textContent = '0';
             }
         }
 
         // Carregar configurações
         function loadSettings() {
-            const darkMode = localStorage.getItem('servlink-dark') === '1';
-            document.getElementById('dark-mode-setting').checked = darkMode;
+            const darkModeSetting = document.getElementById('dark-mode-setting');
+            if (darkModeSetting) {
+                const darkMode = localStorage.getItem('servlink-dark') === '1';
+                darkModeSetting.checked = darkMode;
+            }
         }
 
         // Formulário de perfil
@@ -419,31 +447,55 @@
         });
 
         // Configurações
-        document.getElementById('dark-mode-setting').addEventListener('change', function() {
-            const isDark = this.checked;
-            localStorage.setItem('servlink-dark', isDark ? '1' : '0');
-            setDarkMode(isDark);
-        });
+        const darkModeSetting = document.getElementById('dark-mode-setting');
+        if (darkModeSetting) {
+            darkModeSetting.addEventListener('change', function() {
+                const isDark = this.checked;
+                localStorage.setItem('servlink-dark', isDark ? '1' : '0');
+                setDarkMode(isDark);
+            });
+        }
 
         // Toggle de senha
-        document.getElementById('toggle-current-password').addEventListener('click', function() {
-            togglePasswordVisibility('current-password', this);
-        });
-
-        document.getElementById('toggle-new-password').addEventListener('click', function() {
-            togglePasswordVisibility('new-password', this);
-        });
-
-        function togglePasswordVisibility(inputId, button) {
-            const input = document.getElementById(inputId);
-            const icon = button.querySelector('i');
+        function setupPasswordToggles() {
+            // Toggle senha atual
+            const toggleCurrent = document.getElementById('toggle-current-password');
+            if (toggleCurrent) {
+                toggleCurrent.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const input = document.getElementById('current-password');
+                    const icon = this.querySelector('i');
+                    if (input && icon) {
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.className = 'fas fa-eye-slash';
+                        } else {
+                            input.type = 'password';
+                            icon.className = 'fas fa-eye';
+                        }
+                    }
+                };
+            }
             
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            // Toggle nova senha
+            const toggleNew = document.getElementById('toggle-new-password');
+            if (toggleNew) {
+                toggleNew.onclick = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const input = document.getElementById('new-password');
+                    const icon = this.querySelector('i');
+                    if (input && icon) {
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.className = 'fas fa-eye-slash';
+                        } else {
+                            input.type = 'password';
+                            icon.className = 'fas fa-eye';
+                        }
+                    }
+                };
             }
         }
 

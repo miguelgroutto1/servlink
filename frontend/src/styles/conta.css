@@ -202,6 +202,10 @@
     position: relative;
 }
 
+.password-input-group .form-input {
+    padding-right: 3rem;
+}
+
 .password-toggle {
     position: absolute;
     right: 0.75rem;
@@ -211,9 +215,15 @@
     border: none;
     color: #718096;
     cursor: pointer;
-    padding: 0.25rem;
+    padding: 0.5rem;
     border-radius: 4px;
     transition: all 0.3s ease;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
 }
 
 .password-toggle:hover {
