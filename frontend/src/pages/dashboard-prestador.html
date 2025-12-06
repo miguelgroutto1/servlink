@@ -181,6 +181,11 @@
             
             // Carregar dados do dashboard
             await loadDashboardData(user);
+            
+            // Atualizar dashboard em tempo real a cada 3 segundos
+            setInterval(async () => {
+                await loadDashboardData(user);
+            }, 3000);
         });
 
         // Tornar função global para atualização em tempo real
@@ -205,7 +210,11 @@
                     return dateB - dateA;
                 });
                 
-                renderRecentAppointments(sortedAppointments.slice(0, 5));
+                // Renderizar agendamentos recentes apenas se o elemento existir
+                const recentAppointmentsContainer = document.getElementById('recent-appointments');
+                if (recentAppointmentsContainer) {
+                    renderRecentAppointments(sortedAppointments.slice(0, 5));
+                }
                 
                 // Atualizar estatísticas com serviços e agendamentos
                 updateStats(services, appointments, user.id);
@@ -252,6 +261,11 @@
 
         function renderRecentAppointments(appointments) {
             const container = document.getElementById('recent-appointments');
+            
+            // Verificar se o elemento existe antes de tentar atualizá-lo
+            if (!container) {
+                return;
+            }
             
             if (appointments.length === 0) {
                 container.innerHTML = `
